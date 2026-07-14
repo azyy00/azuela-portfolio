@@ -1,0 +1,704 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Near-black, warmed very slightly so it never reads as pure #000. */
+  --color-bone: #0a0a0b;
+  --color-surface: #131315;
+  --color-surface-alt: #1a1a1d;
+  --color-ink: #edebe6;
+  --color-ink-soft: #b4b1aa;
+  /* Nudged lighter so secondary/meta text clears ~4.5:1 on the near-black bg. */
+  --color-muted: #8b8882;
+  --color-line: #26262a;
+
+  /* One accent, used sparingly: active states, links, the focus ring. */
+  --color-accent: #e5484d;
+  --color-accent-soft: #2a1416;
+
+  /* Contribution heatmap ramp: empty day, then four steps toward the accent. */
+  --color-level-0: #17171a;
+  --color-level-1: #3a1c1e;
+  --color-level-2: #6e2b2f;
+  --color-level-3: #ad3a3f;
+  --color-level-4: #e5484d;
+
+  /* Tag colours: dim washes on dark, not pastel fills. */
+  --color-tag-a: #182028;
+  --color-tag-a-ink: #7fb2d9;
+  --color-tag-b: #16211a;
+  --color-tag-b-ink: #7fc294;
+  --color-tag-c: #231d14;
+  --color-tag-c-ink: #d1a35f;
+  --color-tag-d: #241a1c;
+  --color-tag-d-ink: #d18a8a;
+
+  /* Grotesk carries the display type now. The serif survives only as an
+     italic pull-quote voice, which keeps it from reading as decoration. */
+  --font-serif: 'Instrument Serif', 'Newsreader', Georgia, serif;
+  --font-sans: 'Geist Variable', 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --font-mono: 'Geist Mono Variable', 'SF Mono', 'JetBrains Mono', monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    /* Lenis drives scrolling; native smooth would fight it. */
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+    /* Fewer orphans/ragged lines in long copy — a quiet premium tell. */
+    text-wrap: pretty;
+  }
+
+  /* Fixed nav offset so in-page anchor jumps don't tuck section tops under it. */
+  section[id] {
+    scroll-margin-top: 5.5rem;
+  }
+
+  p {
+    max-width: 68ch;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-bone);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .display {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    /* Even line lengths on multi-line headings. */
+    text-wrap: balance;
+  }
+
+  /* Reserved for pull-quotes and testimonials — never for headings. */
+  .quote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.125rem 0.625rem;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .rule {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+  }
+
+  /* On dark, lift reads as the border catching light — not as a drop shadow,
+     which is invisible against near-black anyway. */
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 12px;
+    transition:
+      border-color 240ms var(--ease-out-expo),
+      background-color 240ms var(--ease-out-expo),
+      transform 240ms var(--ease-out-expo);
+  }
+
+  .card:hover {
+    border-color: color-mix(in oklab, var(--color-accent) 32%, var(--color-line));
+    background: var(--color-surface-alt);
+    transform: translateY(-2px);
+  }
+
+  /* Shared tactile treatment for real actions and button-like links. The
+     accent glow lives on a separate layer so the control keeps a crisp edge. */
+  .glass-button-wrap {
+    position: relative;
+    display: inline-flex;
+    isolation: isolate;
+    border-radius: 9999px;
+  }
+
+  .glass-button-wrap.w-full {
+    display: flex;
+    width: 100%;
+  }
+
+  .glass-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    border: 1px solid rgb(237 235 230 / 0.14);
+    background: rgb(25 25 27 / 0.9);
+    color: var(--color-ink);
+    font: inherit;
+    line-height: 1;
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+    transition:
+      border-color 180ms var(--ease-out-expo),
+      background-color 180ms var(--ease-out-expo),
+      color 180ms var(--ease-out-expo),
+      transform 180ms var(--ease-out-expo);
+  }
+
+  .glass-button-wrap.w-full > .glass-button {
+    width: 100%;
+  }
+
+  .glass-button-text {
+    display: block;
+  }
+
+  .glass-button-shadow {
+    position: absolute;
+    inset: 0.45rem 0.55rem -0.35rem;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--color-accent);
+    opacity: 0;
+    filter: blur(0.65rem);
+    transform: translateY(0.2rem) scale(0.94);
+    transition:
+      opacity 180ms var(--ease-out-expo),
+      transform 180ms var(--ease-out-expo);
+  }
+
+  .glass-button:hover:not(:disabled),
+  .glass-button:focus-visible {
+    border-color: var(--color-accent);
+    background: var(--color-surface-alt);
+    color: var(--color-ink);
+    transform: translateY(-2px);
+  }
+
+  .glass-button:hover:not(:disabled) + .glass-button-shadow,
+  .glass-button:focus-visible + .glass-button-shadow {
+    opacity: 0.22;
+    transform: translateY(0.1rem) scale(1);
+  }
+
+  .glass-button--accent {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-bone);
+  }
+
+  .glass-button--accent:hover:not(:disabled),
+  .glass-button--accent:focus-visible {
+    border-color: color-mix(in oklab, var(--color-accent) 72%, white);
+    background: color-mix(in oklab, var(--color-accent) 82%, white);
+    color: var(--color-bone);
+  }
+
+  .glass-button--ghost {
+    background: transparent;
+    color: var(--color-ink-soft);
+  }
+
+  .glass-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .glass-button-wrap:has(.glass-button:disabled) .glass-button-shadow {
+    display: none;
+  }
+}
+
+/* Ambient laser-flow layer for the work section. The scrim keeps project
+   imagery and controls readable while the supplied WebM carries the motion. */
+.work-section__laser,
+.work-section__veil {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.work-section__laser {
+  z-index: 0;
+  /* The source is square. Filling the section preserves its full vertical
+     beam and bottom glow; `cover` would crop both edges in this wide layout. */
+  object-fit: fill;
+  object-position: center bottom;
+  opacity: 0.62;
+  mix-blend-mode: screen;
+  filter: saturate(1.2) contrast(1.05);
+}
+
+.work-section__veil {
+  z-index: 1;
+  background: rgb(10 10 11 / 0.52);
+}
+
+.work-section {
+  min-height: 100svh;
+}
+
+/* Quiet desktop bar, floating mobile dock. Both share the same single-line
+   information architecture while adapting the interaction model to touch. */
+.site-nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: 4.5rem;
+  pointer-events: none;
+}
+
+.site-nav__bar {
+  position: absolute;
+  top: 0.85rem;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.expandable-tabs {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  min-height: 2.75rem;
+  gap: 0.2rem;
+  padding: 0.3rem;
+  border: 1px solid rgb(237 235 230 / 0.13);
+  border-radius: 9999px;
+  background: rgb(25 25 27 / 0.88);
+  box-shadow: 0 0.8rem 2rem rgb(0 0 0 / 0.18);
+  backdrop-filter: blur(14px);
+}
+
+.expandable-tabs__button {
+  position: relative;
+  display: inline-flex;
+  min-height: 2.15rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  line-height: 1;
+  outline: none;
+  transition:
+    background-color 180ms var(--ease-out-expo),
+    color 180ms var(--ease-out-expo),
+    transform 180ms var(--ease-out-expo);
+}
+
+.expandable-tabs__button svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  stroke-width: 1.8;
+}
+
+.expandable-tabs__button--idle:hover,
+.expandable-tabs__button--idle:focus-visible {
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  transform: translateY(-1px);
+}
+
+.expandable-tabs__button[data-selected='true'] {
+  background: var(--color-surface-alt);
+  color: var(--color-accent);
+}
+
+.expandable-tabs__button[data-selected='true']:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.expandable-tabs__label {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.expandable-tabs__separator {
+  width: 1px;
+  height: 1.35rem;
+  margin: 0 0.15rem;
+  background: rgb(237 235 230 / 0.16);
+}
+
+.site-nav__logo {
+  position: absolute;
+  top: 1.28rem;
+  left: max(1.5rem, calc((100vw - 1280px) / 2));
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  transition: color 180ms var(--ease-out-expo);
+  pointer-events: auto;
+}
+
+.site-nav__logo:hover {
+  color: var(--color-accent);
+}
+
+  .site-nav__hire {
+    position: absolute;
+    top: 0.9rem;
+    right: max(1.5rem, calc((100vw - 1280px) / 2));
+    pointer-events: auto;
+  }
+
+  .site-nav__hire .glass-button {
+    min-height: 2.65rem;
+  }
+
+  .site-nav__hire .glass-button-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .site-nav__hire .glass-button-text > svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0.35rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-bone);
+  stroke-width: 2;
+    transition: transform 180ms var(--ease-out-expo);
+  }
+
+  .site-nav__hire .glass-button:hover .glass-button-text > svg,
+  .site-nav__hire .glass-button:focus-visible .glass-button-text > svg {
+    transform: translate(0.1rem, -0.1rem);
+  }
+
+.site-nav__dock {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .site-nav {
+    height: 4.5rem;
+  }
+
+  .site-nav__bar {
+    display: none;
+  }
+
+  .site-nav__logo {
+    top: 1.25rem;
+    left: 1.25rem;
+  }
+
+  .site-nav__hire {
+    top: 0.95rem;
+    right: 1.25rem;
+    text-shadow: 0 1px 12px rgb(0 0 0 / 0.7);
+  }
+
+  .site-nav__dock {
+    position: fixed;
+    right: 50%;
+    bottom: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.3rem;
+    border: 1px solid rgb(237 235 230 / 0.12);
+    border-radius: 9999px;
+    background: rgb(25 25 27 / 0.92);
+    box-shadow: 0 1rem 2.5rem rgb(0 0 0 / 0.35);
+    transform: translateX(50%);
+    pointer-events: auto;
+  }
+
+  .site-nav__dock-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0 0.65rem;
+    border-radius: 9999px;
+    color: var(--color-muted);
+    transition:
+      background-color 180ms var(--ease-out-expo),
+      color 180ms var(--ease-out-expo),
+      transform 180ms var(--ease-out-expo);
+  }
+
+  .site-nav__dock-item svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    stroke-width: 1.7;
+  }
+
+  .site-nav__dock-item:hover,
+  .site-nav__dock-item:focus-visible {
+    color: var(--color-ink);
+    transform: translateY(-2px);
+  }
+
+  .site-nav__dock-item--active {
+    gap: 0.55rem;
+    background: var(--color-surface-alt);
+    color: var(--color-ink);
+  }
+
+  .site-nav__dock-item--active span {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+}
+
+/* Film grain, sits above everything, ignores pointer events.
+   Screen blend rather than multiply — on near-black, multiply is a no-op. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Slow ambient warmth behind the hero. */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 72% 18%, rgb(229 72 77 / 0.08), transparent 70%),
+    radial-gradient(50rem 40rem at 12% 72%, rgb(90 120 170 / 0.06), transparent 70%);
+  animation: drift 28s var(--ease-out-expo) infinite alternate;
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(-1.5%, -1%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(1.5%, 1.5%, 0) scale(1.06);
+  }
+}
+
+/* Two side-by-side copies translate one full copy-width and loop seamlessly. */
+.animate-marquee {
+  animation-name: marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Premium certificate card: gradient ring, cursor spotlight, sheen, glow. */
+.cert-card {
+  position: relative;
+  display: block;
+  border-radius: 1rem;
+  padding: 1px; /* the padding is the gradient ring */
+  background: linear-gradient(
+    150deg,
+    var(--color-line),
+    color-mix(in oklab, var(--color-line) 60%, transparent)
+  );
+  transform-style: preserve-3d;
+  transition:
+    background 0.4s var(--ease-out-expo),
+    box-shadow 0.45s var(--ease-out-expo),
+    transform 0.3s var(--ease-out-expo);
+}
+
+.cert-card:hover {
+  background: linear-gradient(
+    150deg,
+    color-mix(in oklab, var(--color-accent) 55%, var(--color-line)),
+    color-mix(in oklab, var(--color-accent) 12%, var(--color-line))
+  );
+  box-shadow:
+    0 24px 50px -24px rgb(0 0 0 / 0.7),
+    0 0 34px -12px color-mix(in oklab, var(--color-accent) 45%, transparent);
+}
+
+.cert-card__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: calc(1rem - 1px);
+  background: var(--color-surface);
+}
+
+.cert-card__media {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-line);
+}
+
+/* Light sweep across the certificate on hover. */
+.cert-card__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgb(255 255 255 / 0.14) 46%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.8s var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.cert-card:hover .cert-card__media::after {
+  transform: translateX(120%);
+}
+
+.cert-card__badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--color-accent) 30%, transparent);
+  background: color-mix(in oklab, var(--color-bone) 70%, transparent);
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.35s var(--ease-out-expo),
+    transform 0.35s var(--ease-out-expo);
+}
+
+.cert-card:hover .cert-card__badge {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cert-card__go {
+  display: inline-flex;
+  height: 1.9rem;
+  width: 1.9rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--color-line);
+  color: var(--color-muted);
+  transition:
+    color 0.25s var(--ease-out-expo),
+    border-color 0.25s var(--ease-out-expo),
+    transform 0.25s var(--ease-out-expo);
+}
+
+.cert-card:hover .cert-card__go {
+  color: var(--color-accent);
+  border-color: color-mix(in oklab, var(--color-accent) 50%, var(--color-line));
+  transform: translate(2px, -2px);
+}
+
+/* Cursor-follow spotlight, sits above the inner content but ignores pointer. */
+.cert-card__spot {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 1rem;
+  pointer-events: none;
+  background: radial-gradient(
+    22rem 22rem at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklab, var(--color-accent) 18%, transparent),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out-expo);
+}
+
+.cert-card:hover .cert-card__spot {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Keep the marquee at rest and visible instead of snapping one copy width
+     off-screen, which the blanket rule above would otherwise do. */
+  .animate-marquee {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .work-section__laser {
+    display: none;
+  }
+}

@@ -1,0 +1,29 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+dist-ssr/
+*.tsbuildinfo
+
+# vite / tool caches
+.vite/
+
+# local backup of a rejected design (heavy — not part of the site)
+_backup-red-theme-*/
+
+# agent / editor tooling (not part of the portfolio)
+.claude/
+.agents/
+.codex/
+.mcp.json
+skills-lock.json
+
+# env / secrets
+.env
+.env.*
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
