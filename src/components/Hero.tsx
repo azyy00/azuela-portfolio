@@ -1,24 +1,18 @@
-import { lazy, Suspense } from 'react'
 import { motion } from 'motion/react'
 
 import { hero, site } from '../content/content'
-import { SceneBoundary } from '../three/SceneBoundary'
-
-// Three.js is ~40% of the bundle. Keep it out of the critical path.
-const Scene = lazy(() => import('../three/Scene').then((m) => ({ default: m.Scene })))
+import { HeroReveal } from './HeroReveal'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
 export function Hero() {
   return (
     <section id="top" className="relative flex min-h-svh items-center overflow-hidden">
-      <SceneBoundary>
-        <Suspense fallback={null}>
-          <Scene />
-        </Suspense>
-      </SceneBoundary>
+      <HeroReveal />
 
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pt-[42svh] pb-32 md:pt-28 md:pb-20">
+      {/* pointer-events-none lets the hover reach the portrait behind it;
+          the hero text has nothing interactive. */}
+      <div className="pointer-events-none relative z-10 mx-auto w-full max-w-6xl px-6 pt-[42svh] pb-32 md:pt-28 md:pb-20">
         <motion.p
           className="meta mb-10"
           initial={{ opacity: 0 }}

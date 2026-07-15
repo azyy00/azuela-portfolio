@@ -678,6 +678,109 @@
   opacity: 1;
 }
 
+/* Hero portrait spotlight reveal — plain shot on top, suit shown through a
+   pointer-tracked hole. @property lets the hole radius animate on enter/leave. */
+@property --hole-r {
+  syntax: '<length>';
+  /* must inherit: it is set on .hero-reveal but consumed by the child image + ring */
+  inherits: true;
+  initial-value: 0px;
+}
+
+.hero-reveal {
+  position: absolute;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: auto;
+  --x: 55%;
+  --y: 30%;
+  --hole-r: 0px;
+  /* mobile: a band across the top so the headline stays clear below it */
+  inset: 0 0 auto 0;
+  height: 46svh;
+  -webkit-mask-image: linear-gradient(180deg, #000 52%, transparent);
+  mask-image: linear-gradient(180deg, #000 52%, transparent);
+}
+
+@media (min-width: 768px) {
+  .hero-reveal {
+    inset: 0 0 0 auto;
+    height: 100%;
+    width: min(56%, 760px);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 46%);
+    mask-image: linear-gradient(90deg, transparent, #000 46%);
+  }
+
+  /* Zoom past the frame so both axes are positionable — this is what lets the
+     two differently framed photos line up. Values tuned via overlay compare. */
+  .hero-reveal__suit,
+  .hero-reveal__plain {
+    background-size: auto 126%;
+  }
+
+  .hero-reveal__suit {
+    background-position: 53% 24%;
+  }
+
+  .hero-reveal__plain {
+    background-position: 55% 30%;
+  }
+}
+
+.hero-reveal__suit,
+.hero-reveal__plain {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  /* mobile band: fill it, keep the face near the top */
+  background-size: cover;
+  background-position: 50% 18%;
+  user-select: none;
+}
+
+.hero-reveal__suit {
+  z-index: 0;
+}
+
+.hero-reveal__plain {
+  z-index: 1;
+  -webkit-mask-image: radial-gradient(
+    circle at var(--x) var(--y),
+    transparent 0,
+    transparent calc(var(--hole-r) - 30px),
+    #000 var(--hole-r)
+  );
+  mask-image: radial-gradient(
+    circle at var(--x) var(--y),
+    transparent 0,
+    transparent calc(var(--hole-r) - 30px),
+    #000 var(--hole-r)
+  );
+  transition: --hole-r 0.3s var(--ease-out-expo);
+}
+
+/* red rim tracing the revealed circle */
+.hero-reveal__ring {
+  position: absolute;
+  z-index: 2;
+  left: var(--x);
+  top: var(--y);
+  width: calc(var(--hole-r) * 2);
+  height: calc(var(--hole-r) * 2);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 1px rgba(229, 72, 77, 0.28),
+    0 0 16px 1px rgba(229, 72, 77, 0.09);
+  opacity: 0;
+  transition: opacity 0.2s var(--ease-out-expo);
+}
+
+.hero-reveal:hover .hero-reveal__ring {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ambient {
     animation: none;
