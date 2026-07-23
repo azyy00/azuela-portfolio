@@ -29,7 +29,6 @@ export default function App() {
         <Work />
         <Skills />
         <Contributions />
-        {/* Placeholder roles — LinkedIn could not be read. Fill in content.ts. */}
         <Experience />
         <About />
         <Certificates />

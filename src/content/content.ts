@@ -11,6 +11,9 @@ import gccLibraryThumb from '../assets/gcc-library.jpg'
 // Screen recording of the AQuiz "champion" end screen, with a poster frame.
 import aquizChampionVideo from '../assets/aquiz-champion.mp4'
 import aquizChampionPoster from '../assets/aquiz-champion.jpg'
+// Screen recording of the GCC Scheduling calendar, with a populated poster frame.
+import schedulingVideo from '../assets/scheduling-project.mp4'
+import schedulingPoster from '../assets/scheduling-project.jpg'
 
 export type Project = {
   slug: string
@@ -26,6 +29,8 @@ export type Project = {
   image: string
   /** Optional looping preview video. When set, the card plays it over `image`. */
   video?: string
+  /** Controls whether media fills the card or remains fully visible. */
+  mediaFit?: 'cover' | 'contain'
   /** Omit either link and its button is not rendered. */
   live?: string
   source?: string
@@ -104,7 +109,9 @@ export const projects: Project[] = [
       'Conflict-free timetables for Goa Community College. Admins plan classes and manage sections and faculty; every student gets a schedule that is always current.',
     stack: ['React', 'Tailwind'],
     span: 'normal',
-    image: 'https://picsum.photos/seed/gcc-schedule/900/900',
+    image: schedulingPoster,
+    video: schedulingVideo,
+    mediaFit: 'contain',
     live: 'https://gcc-scheduling-app.vercel.app',
     source: 'https://github.com/azyy00/2026-scheduling-app',
   },
@@ -163,19 +170,19 @@ export const experience = {
   heading: 'Experience',
   roles: [
     {
-      period: 'Dec 2025 — Present',
+      period: 'Dec 2025 - Present',
       title: 'Social Media Manager',
       org: 'Bucketlist Company',
       body: 'Own the end-to-end Instagram strategy for the client account. I design the carousels and assets in Canva, write the hooks and CTAs across Reels and Stories that turn engagement into inbound DMs, run approvals through Slack, and handle daily comments and replies to keep reach up.',
     },
     {
-      period: 'Aug 2025 — Present',
+      period: 'Aug 2025 - Present',
       title: 'IT Support Staff',
       org: 'Goa Community College',
       body: 'Manage the computer laboratory and handle student records and office documentation.',
     },
     {
-      period: 'Mar 2025 — Present',
+      period: 'Mar 2025 - Present',
       title: 'Full-stack Developer',
       org: 'Goa Community College',
       body: 'Built the library system that took the college from paper to paperless: attendance tracking, analytics, and an integrated OPAC. It runs in production and the people using it did not choose to be beta testers.',

@@ -1,8 +1,9 @@
 'use client'
 
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from 'motion/react'
-import { useId, useRef, useState } from 'react'
-import { ArrowLeft, ArrowUpRight } from 'lucide-react'
+import { useEffect, useId, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { ArrowLeft, ArrowUpRight, X } from 'lucide-react'
 
 import { useOutsideClick } from '../../hooks/use-outside-click'
 import { cn } from '@/lib/utils'
@@ -24,6 +25,7 @@ function ProjectLink({ href, children }: { href: string; children: string }) {
       href={href}
       target="_blank"
       rel="noreferrer noopener"
+      aria-label={children}
       size="sm"
       variant="ghost"
       contentClassName="flex items-center gap-1.5"
@@ -34,19 +36,186 @@ function ProjectLink({ href, children }: { href: string; children: string }) {
   )
 }
 
+function ProjectDetailDialog({
+  project,
+  reduced,
+  onClose,
+}: {
+  project: Project
+  reduced: boolean | null
+  onClose: () => void
+}) {
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    closeButtonRef.current?.focus()
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose()
+        return
+      }
+
+      if (event.key !== 'Tab' || !dialogRef.current) return
+
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [onClose])
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-[70] overflow-y-auto bg-bone/90 p-4 backdrop-blur-md md:p-8"
+      initial={reduced ? false : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: reduced ? 0 : 0.2 }}
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose()
+      }}
+    >
+      <motion.div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`project-title-${project.slug}`}
+        className="relative mx-auto my-4 w-full max-w-6xl overflow-hidden rounded-[2rem] border border-line bg-surface shadow-2xl md:my-8"
+        initial={reduced ? false : { opacity: 0, y: 24, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 16, scale: 0.98 }}
+        transition={reduced ? { duration: 0 } : transition}
+      >
+        <div className="absolute right-4 top-4 z-20 md:right-6 md:top-6">
+          <GlassButton
+            ref={closeButtonRef}
+            type="button"
+            size="icon"
+            variant="ghost"
+            aria-label={`Close ${project.title}`}
+            onClick={onClose}
+          >
+            <X className="h-4 w-4" aria-hidden="true" />
+          </GlassButton>
+        </div>
+
+        <div className="grid lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.55fr)]">
+          <div className="flex min-h-64 items-center justify-center overflow-hidden bg-bone lg:min-h-[38rem]">
+            {project.video ? (
+              <video
+                src={project.video}
+                poster={project.image}
+                autoPlay={!reduced}
+                loop
+                muted
+                controls
+                playsInline
+                preload="metadata"
+                className={cn(
+                  'h-full max-h-[75dvh] w-full',
+                  project.mediaFit === 'contain' ? 'object-contain' : 'object-cover',
+                )}
+                aria-label={`${project.title} preview`}
+              />
+            ) : (
+              <img
+                src={project.image}
+                alt={`${project.title} project preview`}
+                className={cn(
+                  'h-full max-h-[75dvh] w-full',
+                  project.mediaFit === 'contain' ? 'object-contain' : 'object-cover',
+                )}
+              />
+            )}
+          </div>
+
+          <div className="flex flex-col justify-between p-6 pt-20 md:p-10 md:pt-24 lg:p-10 lg:pt-24">
+            <div>
+              <div className="meta flex flex-wrap items-center gap-x-4 gap-y-2">
+                <span>{project.role}</span>
+                <span>{project.year}</span>
+              </div>
+              <h3
+                id={`project-title-${project.slug}`}
+                className="display mt-4 text-3xl md:text-5xl"
+              >
+                {project.title}
+              </h3>
+              <p className="mt-6 text-base leading-relaxed text-ink-soft">
+                {project.summary}
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-2" aria-label="Technology stack">
+                {project.stack.map((technology) => (
+                  <span
+                    key={technology}
+                    className="tag border border-line bg-surface-alt text-ink-soft"
+                  >
+                    {technology}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-3 border-t border-line pt-6">
+              {project.live ? <ProjectLink href={project.live}>Live</ProjectLink> : null}
+              {project.source ? <ProjectLink href={project.source}>Source</ProjectLink> : null}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
 export function ExpandableGallery({ projects }: { projects: Project[] }) {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const reduced = useReducedMotion()
   const layoutGroupId = useId()
   const containerRef = useRef<HTMLDivElement>(null)
+  const activeTriggerRef = useRef<HTMLElement | null>(null)
 
   useOutsideClick(containerRef, () => {
-    if (isExpanded) setIsExpanded(false)
+    if (isExpanded && !selectedProject) setIsExpanded(false)
   })
 
+  const openProject = (project: Project) => {
+    activeTriggerRef.current = document.activeElement as HTMLElement | null
+    setSelectedProject(project)
+  }
+
+  const closeProject = () => {
+    setSelectedProject(null)
+    window.requestAnimationFrame(() => activeTriggerRef.current?.focus())
+  }
+
   return (
-    <LayoutGroup id={layoutGroupId}>
-      <div className="flex w-full flex-col items-center">
+    <>
+      <LayoutGroup id={layoutGroupId}>
+        <div className="flex w-full flex-col items-center">
         <div className="mb-2 flex h-12 w-full items-center justify-start">
           <AnimatePresence>
             {isExpanded && (
@@ -97,8 +266,11 @@ export function ExpandableGallery({ projects }: { projects: Project[] }) {
               const stack = STACK[index] ?? { rotation: 0, x: 0, y: 0, zIndex: index }
 
               const card = (
-                <motion.div
+                <motion.button
                   key={`card-${project.slug}`}
+                  type="button"
+                  aria-label={`View ${project.title}`}
+                  aria-haspopup="dialog"
                   layoutId={`card-container-${project.slug}`}
                   layout
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -122,9 +294,9 @@ export function ExpandableGallery({ projects }: { projects: Project[] }) {
                           transition: { type: 'spring', stiffness: 400, damping: 25 },
                         }
                   }
-                  onClick={() => !isExpanded && setIsExpanded(true)}
+                  onClick={() => openProject(project)}
                   className={cn(
-                    'cursor-pointer overflow-hidden bg-surface',
+                    'cursor-pointer overflow-hidden bg-surface text-left',
                     isExpanded
                       ? 'relative aspect-square rounded-[1.75rem] border border-line md:rounded-[2.25rem]'
                       : 'absolute h-44 w-44 rounded-[2.25rem] border border-line md:h-56 md:w-56',
@@ -145,19 +317,29 @@ export function ExpandableGallery({ projects }: { projects: Project[] }) {
                         muted
                         playsInline
                         preload="metadata"
-                        className="h-full w-full object-cover select-none"
+                        className={cn(
+                          'h-full w-full select-none',
+                          project.mediaFit === 'contain'
+                            ? 'bg-bone object-contain'
+                            : 'object-cover',
+                        )}
                         aria-label={`${project.title} preview`}
                       />
                     ) : (
                       <img
                         src={project.image}
                         alt={project.title}
-                        className="h-full w-full object-cover brightness-[0.72] saturate-[0.4] select-none"
+                        className={cn(
+                          'h-full w-full brightness-[0.72] saturate-[0.4] select-none',
+                          project.mediaFit === 'contain'
+                            ? 'bg-bone object-contain'
+                            : 'object-cover',
+                        )}
                         draggable={false}
                       />
                     )}
                   </motion.div>
-                </motion.div>
+                </motion.button>
               )
 
               if (!isExpanded) return card
@@ -198,6 +380,7 @@ export function ExpandableGallery({ projects }: { projects: Project[] }) {
               >
                 <GlassButton
                   onClick={() => setIsExpanded(true)}
+                  aria-label="Explore all projects"
                   variant="accent"
                   contentClassName="group flex items-center gap-2"
                 >
@@ -211,8 +394,25 @@ export function ExpandableGallery({ projects }: { projects: Project[] }) {
             )}
           </AnimatePresence>
         </motion.div>
-      </div>
-    </LayoutGroup>
+        </div>
+      </LayoutGroup>
+
+      {typeof document !== 'undefined'
+        ? createPortal(
+            <AnimatePresence>
+              {selectedProject ? (
+                <ProjectDetailDialog
+                  key={selectedProject.slug}
+                  project={selectedProject}
+                  reduced={reduced}
+                  onClose={closeProject}
+                />
+              ) : null}
+            </AnimatePresence>,
+            document.body,
+          )
+        : null}
+    </>
   )
 }
 
