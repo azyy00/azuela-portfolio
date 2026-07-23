@@ -715,7 +715,7 @@
      two differently framed photos line up. Values tuned via overlay compare. */
   .hero-reveal__suit,
   .hero-reveal__plain {
-    background-size: auto 126%;
+    background-size: auto 146%;
   }
 
   .hero-reveal__suit {
@@ -757,6 +757,23 @@
     #000 var(--hole-r)
   );
   transition: --hole-r 0.3s var(--ease-out-expo);
+}
+
+/* Keep the desktop crop after the shared mobile defaults so the two portraits
+   use the intended alignment. */
+@media (min-width: 768px) {
+  .hero-reveal__suit,
+  .hero-reveal__plain {
+    background-size: auto 146%;
+  }
+
+  .hero-reveal__suit {
+    background-position: 53% 19%;
+  }
+
+  .hero-reveal__plain {
+    background-position: 55% 30%;
+  }
 }
 
 /* red rim tracing the revealed circle */
