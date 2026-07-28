@@ -1204,6 +1204,222 @@
   text-align: right;
 }
 
+/* Experience — an editorial "work ledger": numbered records rather than a
+   generic dotted timeline. Each row fills its index numeral in accent on hover
+   and sweeps a faint wash across, so the section reads as a designed artifact. */
+.xp-education__degree {
+  margin-top: 0.65rem;
+  color: var(--color-ink);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.xp-education__school {
+  margin-top: 0.2rem;
+  color: var(--color-ink-soft);
+  font-size: 0.82rem;
+}
+
+.xp-education__year {
+  margin-top: 0.2rem;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+}
+
+.xp-ledger {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--color-line);
+}
+
+.xp-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr) 2.75rem;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: start;
+  padding: clamp(2rem, 3.6vw, 3.4rem) 0.75rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+/* A faint accent wash + a growing left edge on hover — depth without a card. */
+.xp-row::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background: linear-gradient(100deg, rgb(229 72 77 / 0.06), transparent 46%);
+  transition: opacity 0.45s var(--ease-out-expo);
+}
+
+.xp-row::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background: var(--color-accent);
+  transform: translateY(-50%);
+  transition: height 0.45s var(--ease-out-expo);
+}
+
+.xp-row:hover::before {
+  opacity: 1;
+}
+
+.xp-row:hover::after {
+  height: 100%;
+}
+
+.xp-row__rail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.xp-row__index {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 4.4vw, 3.75rem);
+  line-height: 0.86;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--color-line);
+  font-variant-numeric: tabular-nums;
+  transition:
+    color 0.45s var(--ease-out-expo),
+    -webkit-text-stroke-color 0.45s var(--ease-out-expo);
+}
+
+.xp-row:hover .xp-row__index {
+  color: var(--color-accent);
+  -webkit-text-stroke-color: var(--color-accent);
+}
+
+.xp-row__period {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.xp-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.xp-live__dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 0 rgb(229 72 77 / 0.5);
+  animation: xp-pulse 2.6s ease-out infinite;
+}
+
+@keyframes xp-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(229 72 77 / 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 0.5rem rgb(229 72 77 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(229 72 77 / 0);
+  }
+}
+
+.xp-row__title {
+  font-size: clamp(1.55rem, 2.6vw, 2.35rem);
+  line-height: 1.05;
+  color: var(--color-ink);
+}
+
+.xp-row__org {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.95rem;
+  color: var(--color-ink-soft);
+  font-size: 0.9rem;
+}
+
+.xp-row__logo {
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: 0 0 auto;
+  border-radius: 0.4rem;
+  border: 1px solid var(--color-line);
+  background: #fff;
+  object-fit: contain;
+  padding: 0.15rem;
+}
+
+.xp-row__body {
+  margin-top: 1.15rem;
+  max-width: 46rem;
+  color: var(--color-ink-soft);
+  font-size: 0.98rem;
+  line-height: 1.72;
+  text-wrap: pretty;
+}
+
+.xp-row__marker {
+  align-self: start;
+  justify-self: end;
+  margin-top: 0.4rem;
+  color: var(--color-muted);
+  opacity: 0.45;
+  transition:
+    transform 0.45s var(--ease-out-expo),
+    color 0.45s var(--ease-out-expo),
+    opacity 0.45s var(--ease-out-expo);
+}
+
+.xp-row__marker svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.xp-row:hover .xp-row__marker {
+  color: var(--color-accent);
+  opacity: 1;
+  transform: translate(3px, -3px);
+}
+
+@media (max-width: 767px) {
+  .xp-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.15rem;
+    padding: 1.85rem 0.25rem;
+  }
+
+  .xp-row__rail {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .xp-row__index {
+    font-size: 2.4rem;
+  }
+
+  .xp-row__marker {
+    display: none;
+  }
+}
+
 .brand-panel-bar {
   display: flex;
   min-height: 2.5rem;

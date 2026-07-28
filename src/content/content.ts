@@ -6,14 +6,13 @@
  * Forks (AI-PROMPT, public-apis) are deliberately excluded.
  */
 
-// Real screenshot of the live OPAC (gcc-library-frontend.vercel.app/opac).
-import gccLibraryThumb from '../assets/gcc-library.jpg'
+// GCC Library analytics dashboard thumbnail.
+import gccLibraryThumb from '../assets/library-graph.png'
 // Screen recording of the AQuiz "champion" end screen, with a poster frame.
 import aquizChampionVideo from '../assets/aquiz-champion.mp4'
 import aquizChampionPoster from '../assets/aquiz-champion.jpg'
-// Screen recording of the GCC Scheduling calendar, with a populated poster frame.
-import schedulingVideo from '../assets/scheduling-project.mp4'
-import schedulingPoster from '../assets/scheduling-project.jpg'
+// GCC Scheduling dashboard thumbnail.
+import schedulingPoster from '../assets/sched.png'
 // Workplace logos for the experience timeline (real employer marks).
 import logoBucketlist from '../assets/logo-bucketlist.jpg'
 import logoGcc from '../assets/gcc-logo.png'
@@ -116,7 +115,6 @@ export const projects: Project[] = [
     stack: ['React', 'Tailwind'],
     span: 'normal',
     image: schedulingPoster,
-    video: schedulingVideo,
     mediaFit: 'contain',
     live: 'https://gcc-scheduling-app.vercel.app',
     source: 'https://github.com/azyy00/2026-scheduling-app',
