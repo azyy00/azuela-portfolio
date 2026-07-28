@@ -14,6 +14,10 @@ import aquizChampionPoster from '../assets/aquiz-champion.jpg'
 // Screen recording of the GCC Scheduling calendar, with a populated poster frame.
 import schedulingVideo from '../assets/scheduling-project.mp4'
 import schedulingPoster from '../assets/scheduling-project.jpg'
+// Workplace logos for the experience timeline (real employer marks).
+import logoBucketlist from '../assets/logo-bucketlist.jpg'
+import logoGcc from '../assets/gcc-logo.png'
+import logoSanjose from '../assets/logo-sanjose.jpg'
 
 export type Project = {
   slug: string
@@ -60,6 +64,7 @@ export const hero = {
 
 export const about = {
   heading: 'About',
+  lead: 'I build the software the places around me needed.',
   body: [
     'I taught myself to build for the web because the places around me needed software and nobody was going to write it for them. The library was tracking attendance on paper. The registrar was resolving schedule conflicts by hand. So I built the things that fixed those problems, and shipped them.',
     'That has shaped how I work. I care less about which framework is ahead this year and more about whether the person at the kiosk can check in without asking for help. Most of my projects are in production at a community college, which is a very direct kind of feedback.',
@@ -157,7 +162,7 @@ export const skills = {
     },
     {
       label: 'Platform',
-      items: ['Vite', 'Vercel', 'Serverless functions', 'Gemini API'],
+      items: ['Vite', 'Vercel', 'Serverless functions', 'Gemini API', 'ChatGPT', 'Claude'],
     },
     {
       label: 'Design & content',
@@ -173,25 +178,29 @@ export const experience = {
       period: 'Dec 2025 - Present',
       title: 'Social Media Manager',
       org: 'Bucketlist Company',
+      logo: logoBucketlist,
       body: 'Own the end-to-end Instagram strategy for the client account. I design the carousels and assets in Canva, write the hooks and CTAs across Reels and Stories that turn engagement into inbound DMs, run approvals through Slack, and handle daily comments and replies to keep reach up.',
     },
     {
       period: 'Aug 2025 - Present',
       title: 'IT Support Staff',
       org: 'Goa Community College',
+      logo: logoGcc,
       body: 'Manage the computer laboratory and handle student records and office documentation.',
     },
     {
       period: 'Mar 2025 - Present',
       title: 'Full-stack Developer',
       org: 'Goa Community College',
+      logo: logoGcc,
       body: 'Built the library system that took the college from paper to paperless: attendance tracking, analytics, and an integrated OPAC. It runs in production and the people using it did not choose to be beta testers.',
     },
     {
       period: 'Jul 2024',
       title: 'Intern',
       org: 'Business Permit and Licensing Office',
-      body: 'One-month placement.',
+      logo: logoSanjose,
+      body: 'One-month placement at the Municipality of San José.',
     },
   ],
   education: {

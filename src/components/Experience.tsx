@@ -6,10 +6,20 @@ export function Experience() {
     title: role.period,
     content: (
       <div className="border-t border-line pt-6">
-        <p className="meta text-accent">{role.org}</p>
-        <h3 className="mt-3 text-2xl font-medium tracking-[-0.025em] text-ink md:text-3xl">
-          {role.title}
-        </h3>
+        <div className="flex items-start gap-4">
+          <img
+            src={role.logo}
+            alt={`${role.org} logo`}
+            className="h-12 w-12 shrink-0 rounded-xl border border-line bg-white object-contain p-1.5"
+            loading="lazy"
+          />
+          <div className="min-w-0">
+            <p className="meta text-accent">{role.org}</p>
+            <h3 className="mt-1.5 text-2xl font-medium tracking-[-0.025em] text-ink md:text-3xl">
+              {role.title}
+            </h3>
+          </div>
+        </div>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-soft">{role.body}</p>
       </div>
     ),

@@ -216,7 +216,12 @@ export function ExpandableGallery({ projects }: { projects: Project[] }) {
     <>
       <LayoutGroup id={layoutGroupId}>
         <div className="flex w-full flex-col items-center">
-        <div className="mb-2 flex h-12 w-full items-center justify-start">
+        <div
+          className={cn(
+            'flex w-full items-center justify-start',
+            isExpanded ? 'mb-2 h-12' : 'h-0',
+          )}
+        >
           <AnimatePresence>
             {isExpanded && (
               <motion.div

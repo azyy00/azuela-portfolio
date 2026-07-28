@@ -270,6 +270,142 @@
   min-height: 100svh;
 }
 
+.work-section__curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  background: var(--color-bone);
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--color-accent) 32%, transparent);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* The About panel is fixed inside a clipped section on desktop. As the section
+   enters the viewport, the panel is exposed like a rising curtain. */
+.cinematic-about {
+  z-index: 0;
+  background:
+    radial-gradient(circle at 18% 18%, rgb(229 72 77 / 0.08), transparent 32rem),
+    var(--color-bone);
+  color: var(--color-ink);
+  isolation: isolate;
+}
+
+.cinematic-about-aurora {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: min(78rem, 105vw);
+  height: min(46rem, 72vh);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(229 72 77 / 0.16) 0%,
+    rgb(229 72 77 / 0.05) 42%,
+    transparent 72%
+  );
+  filter: blur(4rem);
+  opacity: 0.72;
+  transform: translate(-50%, -50%);
+  animation: cinematic-about-breathe 9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+.cinematic-about-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(10 10 11 / 0.12), transparent 28%),
+    radial-gradient(circle at center, transparent 25%, rgb(10 10 11 / 0.62) 100%);
+  pointer-events: none;
+}
+
+.cinematic-section-word {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 0;
+  color: transparent;
+  font-family: var(--font-sans);
+  font-size: clamp(7rem, 22vw, 22rem);
+  font-weight: 800;
+  letter-spacing: -0.08em;
+  line-height: 0.72;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  -webkit-text-stroke: 1px rgb(237 235 230 / 0.07);
+  background: linear-gradient(180deg, rgb(237 235 230 / 0.09), transparent 72%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cinematic-work-word {
+  bottom: -0.04em;
+  z-index: 2;
+  font-size: clamp(8rem, 24vw, 24rem);
+}
+
+@media (max-width: 767px) {
+  .cinematic-about-word {
+    bottom: 4rem;
+  }
+
+  .cinematic-work-word {
+    bottom: 2rem;
+  }
+}
+
+@keyframes cinematic-about-breathe {
+  from {
+    opacity: 0.58;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  to {
+    opacity: 0.82;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+
+/* About portrait — framed B&W image with a red-tinted glow to sit in the theme */
+.about-portrait {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  box-shadow:
+    0 40px 90px -45px rgb(0 0 0 / 0.85),
+    0 0 60px -20px rgb(229 72 77 / 0.22);
+}
+
+.about-portrait__img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 16%;
+  filter: grayscale(1) contrast(1.03);
+}
+
+.about-portrait__wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 56%, rgb(10 10 11 / 0.5) 100%),
+    radial-gradient(120% 80% at 82% 2%, rgb(229 72 77 / 0.15), transparent 58%);
+}
+
+@media (min-width: 768px) {
+  .about-portrait__img {
+    aspect-ratio: auto;
+    height: min(58svh, 33rem);
+  }
+}
+
 /* Quiet desktop bar, floating mobile dock. Both share the same single-line
    information architecture while adapting the interaction model to touch. */
 .site-nav {

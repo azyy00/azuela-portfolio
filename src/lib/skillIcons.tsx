@@ -1,5 +1,6 @@
 import {
   Atom,
+  Bot,
   Braces,
   Brush,
   Cloud,
@@ -20,6 +21,7 @@ import {
 } from 'lucide-react'
 import {
   siChakraui,
+  siClaude,
   siExpress,
   siFigma,
   siFramer,
@@ -57,6 +59,8 @@ const ICONS: Record<string, LucideIcon> = {
   Vercel: Triangle,
   'Serverless functions': Cloud,
   'Gemini API': Sparkles,
+  ChatGPT: Bot,
+  Claude: Sparkles,
   'UI/UX design': PenTool,
   Canva: Palette,
   'Graphic design': Brush,
@@ -78,10 +82,12 @@ const BRAND_ICONS: Record<string, SimpleIcon> = {
   Vercel: siVercel,
   'Serverless functions': siServerless,
   'Gemini API': siGooglegemini,
+  Claude: siClaude,
   'UI/UX design': siFigma,
 }
 
 const SUPPORTING_COLORS: Record<string, string> = {
+  ChatGPT: '#10A37F',
   Canva: '#00C4CC',
   'Graphic design': '#FF6B35',
   'Social media management': '#E4405F',
