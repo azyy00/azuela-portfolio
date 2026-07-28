@@ -3,6 +3,7 @@ import { motion, useMotionValue, useReducedMotion, useSpring } from 'motion/reac
 import { Award, ArrowUpRight } from 'lucide-react'
 
 import { certificates } from '../content/content'
+import { SectionHeading } from './ui/section-heading'
 
 // Rendered JPG previews and the source PDFs, keyed by their shared basename.
 const images = import.meta.glob('../assets/certificates/*.jpg', {
@@ -33,7 +34,7 @@ type Item = (typeof certificates.items)[number]
 
 const ease = [0.16, 1, 0.3, 1] as const
 
-function CertificateCard({ item, index }: { item: Item; index: number }) {
+function CertificateCard({ item }: { item: Item }) {
   const reduced = useReducedMotion()
   const image = imageByName[item.file]
   const pdf = pdfByName[item.file]
@@ -67,10 +68,8 @@ function CertificateCard({ item, index }: { item: Item; index: number }) {
       rel="noreferrer noopener"
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      initial={{ opacity: 0, y: 20, scale: 0.97 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: '-12% 0px' }}
-      transition={{ duration: 0.6, ease, delay: (index % 3) * 0.09 }}
+      initial={false}
+      transition={{ duration: 0.35, ease, delay: 0 }}
       style={reduced ? undefined : { rotateX, rotateY, transformPerspective: 1000 }}
       className="cert-card group"
       aria-label={`${item.title} — ${certificates.issuer} certificate (opens PDF)`}
@@ -111,32 +110,18 @@ function CertificateCard({ item, index }: { item: Item; index: number }) {
 
 export function Certificates() {
   return (
-    <section id="certificates" className="relative z-10 border-t border-line">
-      <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <motion.h2
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-12% 0px' }}
-            transition={{ duration: 0.6, ease }}
-            className="display text-4xl md:text-5xl"
-          >
-            {certificates.heading}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-12% 0px' }}
-            transition={{ duration: 0.6, ease, delay: 0.08 }}
-            className="max-w-md text-sm text-muted"
-          >
-            {certificates.note}
-          </motion.p>
-        </div>
+    <section id="certificates" className="brand-section brand-section--certificates">
+      <div className="brand-shell">
+        <SectionHeading
+          signal="Verified learning"
+          heading={certificates.heading}
+          note={certificates.note}
+          aside={<span className="meta">{certificates.items.length} credentials / DataCamp</span>}
+        />
 
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {certificates.items.map((item, i) => (
-            <CertificateCard key={item.file} item={item} index={i} />
+        <div className="certificates-grid">
+          {certificates.items.map((item) => (
+            <CertificateCard key={item.file} item={item} />
           ))}
         </div>
       </div>

@@ -25,6 +25,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "simple-icons": "^16.26.0",
+    "simple-icons-v13": "npm:simple-icons@^13.21.0",
     "tailwind-merge": "^3.6.0",
     "three": "^0.175.0"
   },

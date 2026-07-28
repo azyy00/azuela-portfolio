@@ -26,9 +26,11 @@ export function Experience() {
   }))
 
   return (
-    <section id="experience" className="relative z-10 border-t border-line">
+    <section id="experience" className="brand-section brand-section--experience">
       <Timeline
         heading={experience.heading}
+        signal={experience.signal}
+        note={experience.note}
         data={entries}
         intro={
           <div className="border-t border-line pt-6">

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 
 import { nav, site } from '../content/content'
+import { scrollToSection } from '../lib/useSmoothScroll'
 import { ExpandableTabs, type TabItem } from './ui/expandable-tabs'
 import { GlassButtonLink } from './ui/glass-button'
 
@@ -48,7 +49,7 @@ export function Nav() {
   return (
     <header className="site-nav">
       <a href="#top" className="site-nav__logo" aria-label={`${site.name} home`}>
-        Azzy
+        <span data-wordmark="AZZY">AZZY</span>
       </a>
 
       <nav className="site-nav__bar" aria-label="Primary navigation">
@@ -58,7 +59,7 @@ export function Nav() {
           activeColor="text-accent"
           onChange={(index) => {
             const href = index === null ? null : tabLinks[index]
-            if (href) window.location.hash = href
+            if (href) scrollToSection(href)
           }}
         />
       </nav>

@@ -18,6 +18,7 @@ import schedulingPoster from '../assets/scheduling-project.jpg'
 import logoBucketlist from '../assets/logo-bucketlist.jpg'
 import logoGcc from '../assets/gcc-logo.png'
 import logoSanjose from '../assets/logo-sanjose.jpg'
+import adelphasThumb from '../assets/adelphas.png'
 
 export type Project = {
   slug: string
@@ -130,7 +131,7 @@ export const projects: Project[] = [
     stack: ['React', 'Vite', 'Motion'],
     span: 'normal',
     // The code lives in the repo named `Restaurant1`, not `adelphas` (which is empty).
-    image: 'https://picsum.photos/seed/adelphas-burger/900/900',
+    image: adelphasThumb,
     source: 'https://github.com/azyy00/Restaurant1',
   },
   {
@@ -173,6 +174,8 @@ export const skills = {
 
 export const experience = {
   heading: 'Experience',
+  signal: 'Work history',
+  note: 'Roles across software, operations, and digital communication.',
   roles: [
     {
       period: 'Dec 2025 - Present',

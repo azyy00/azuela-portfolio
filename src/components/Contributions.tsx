@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 
 import { github, site } from '../content/content'
-import { rise } from '../lib/motion'
+import { SectionHeading } from './ui/section-heading'
 
 type Day = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }
 type Payload = { total: Record<string, number>; contributions: Day[] }
@@ -91,28 +91,30 @@ export function Contributions() {
   }, [])
 
   return (
-    <section id="activity" className="relative z-10 border-t border-line">
-      <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <motion.h2 {...rise} className="display text-4xl md:text-5xl">
-            {github.heading}
-          </motion.h2>
-          <motion.p
-            {...rise}
-            transition={{ ...rise.transition, delay: 0.08 }}
-            className="max-w-sm text-sm text-muted"
-          >
-            {github.note}
-          </motion.p>
-        </div>
+    <section id="activity" className="brand-section brand-section--activity">
+      <div className="brand-shell">
+        <SectionHeading
+          signal="Public build log"
+          heading={github.heading}
+          note={github.note}
+          aside={<span className="meta">@{site.githubUser} / last 12 months</span>}
+        />
 
         <motion.div
-          {...rise}
-          transition={{ ...rise.transition, delay: 0.12 }}
-          className="mt-14 rounded-xl border border-line bg-surface p-6 md:p-8"
+          className="activity-console"
+          aria-busy={state.status === 'loading'}
         >
+          <div className="brand-panel-bar">
+            <span>github.com/{site.githubUser}/activity</span>
+            <span>{state.status}</span>
+          </div>
+          <div className="activity-console__body">
           {state.status === 'loading' ? (
-            <p className="meta py-10 text-center">Loading contributions</p>
+            <div className="activity-loading" aria-label="Loading contributions">
+              <span />
+              <span />
+              <span />
+            </div>
           ) : null}
 
           {state.status === 'failed' ? (
@@ -181,6 +183,7 @@ export function Contributions() {
               </div>
             </>
           ) : null}
+          </div>
         </motion.div>
       </div>
     </section>

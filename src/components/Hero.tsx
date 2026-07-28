@@ -1,34 +1,63 @@
-import { motion } from 'motion/react'
+import { useRef } from 'react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
 
 import { hero, site } from '../content/content'
+import { GlassButtonLink } from './ui/glass-button'
 import { HeroReveal } from './HeroReveal'
 
 const ease = [0.16, 1, 0.3, 1] as const
 
 export function Hero() {
-  return (
-    <section id="top" className="relative flex min-h-svh items-center overflow-hidden">
-      <HeroReveal />
+  const sectionRef = useRef<HTMLElement>(null)
+  const reduced = useReducedMotion()
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  })
+  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 90])
+  const portraitScale = useTransform(scrollYProgress, [0, 1], [1, 1.05])
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, -44])
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.82], [1, 0.28])
 
-      {/* pointer-events-none lets the hover reach the portrait behind it;
-          the hero text has nothing interactive. */}
-      <div className="pointer-events-none relative z-10 mx-auto w-full max-w-6xl px-6 pt-[42svh] pb-32 md:pt-28 md:pb-20">
+  return (
+    <section
+      id="top"
+      ref={sectionRef}
+      className="home-hero relative flex overflow-hidden"
+    >
+      <HeroReveal style={reduced ? undefined : { y: portraitY, scale: portraitScale }} />
+
+      <motion.div
+        className="hero-shell pointer-events-none relative z-10"
+        style={reduced ? undefined : { y: copyY, opacity: copyOpacity }}
+      >
+        <motion.div
+          className="hero-availability"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease, delay: 0.05 }}
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_1.2rem_var(--color-accent)]" />
+          <span className="font-medium text-ink">{site.availability}</span>
+          <span className="h-4 w-px bg-line" aria-hidden="true" />
+          <span>{site.location}</span>
+        </motion.div>
+
         <motion.p
-          className="meta mb-10"
+          className="hero-kicker meta"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.1 }}
         >
-          {site.name} — {site.role}
+          {site.name} / {site.role}
         </motion.p>
 
-        {/* The grotesk sets far wider than the serif did at the same size —
-            this stays clear of the knot where a 7rem cap ran under it. */}
-        <h1 className="display max-w-3xl text-[clamp(2.5rem,6.2vw,5.5rem)]">
+        <h1 className="hero-heading display">
           {hero.lines.map((line, i) => (
             <span key={line} className="block overflow-hidden">
               <motion.span
-                className={`block ${i === hero.lines.length - 1 ? 'text-muted' : ''}`}
+                className={`hero-text-line block${i === hero.lines.length - 1 ? ' hero-text-line--muted' : ''}`}
                 initial={{ y: '110%' }}
                 animate={{ y: '0%' }}
                 transition={{ duration: 1, ease, delay: 0.15 + i * 0.09 }}
@@ -40,25 +69,29 @@ export function Hero() {
         </h1>
 
         <motion.p
-          className="mt-12 max-w-xl text-base text-ink-soft"
+          className="hero-intro"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease, delay: 0.6 }}
         >
           {hero.intro}
         </motion.p>
-      </div>
 
-      <motion.div
-        className="meta absolute bottom-8 left-1/2 -translate-x-1/2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.1 }}
-      >
-        <span className="flex flex-col items-center gap-2">
-          {hero.scrollHint}
-          <span className="block h-8 w-px bg-line" />
-        </span>
+        <motion.div
+          className="hero-actions pointer-events-auto"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease, delay: 0.72 }}
+        >
+          <GlassButtonLink href="#work" variant="accent" contentClassName="flex items-center gap-2">
+            View work
+            <ArrowDownRight className="h-4 w-4" aria-hidden="true" />
+          </GlassButtonLink>
+          <GlassButtonLink href="#contact" variant="ghost" contentClassName="flex items-center gap-2">
+            Start a project
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </GlassButtonLink>
+        </motion.div>
       </motion.div>
     </section>
   )

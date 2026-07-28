@@ -29,6 +29,7 @@ export function About() {
           scale: 1,
           opacity: 1,
           ease: 'none',
+          immediateRender: false,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top bottom',
@@ -46,6 +47,7 @@ export function About() {
           opacity: 1,
           stagger: 0.08,
           ease: 'none',
+          immediateRender: false,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 82%',
@@ -90,6 +92,10 @@ export function About() {
 
           {/* Story */}
           <div className="order-2 col-span-full md:col-span-6 md:col-start-7">
+            <div className="about-signal">
+              <span aria-hidden="true" />
+              Builder profile / Goa, Camarines Sur
+            </div>
             <h2
               ref={headingRef}
               className="quote max-w-[16ch] text-3xl text-ink md:text-[2.6rem] md:leading-[1.15]"

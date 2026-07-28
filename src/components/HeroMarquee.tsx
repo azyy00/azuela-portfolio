@@ -1,21 +1,21 @@
-import { Marquee } from './ui/marquee'
 import { skills } from '../content/content'
 import { BrandIcon, brandIcon, skillColor, skillIcon } from '../lib/skillIcons'
+import { PerspectiveMarquee } from './ui/perspective-marquee'
 
 // Every skill in the stack, flattened into one scrolling strip.
 const items = skills.groups.flatMap((group) => group.items)
 
 export function HeroMarquee() {
   return (
-    <div className="relative z-10 border-y border-line bg-surface/40 py-4">
-      <Marquee speed={45}>
+    <section className="hero-marquee relative z-10" aria-label="Tools and technologies">
+      <PerspectiveMarquee speed={40} rotateY={-16} rotateX={7} perspective={1200}>
         {items.map((item) => {
           const Icon = skillIcon(item)
           const brand = brandIcon(item)
           return (
             <span
               key={item}
-              className="mx-5 inline-flex shrink-0 items-center gap-2 font-mono text-xs tracking-widest text-ink-soft uppercase"
+              className="hero-marquee__item"
             >
               {brand ? (
                 <BrandIcon icon={brand} />
@@ -27,13 +27,11 @@ export function HeroMarquee() {
                 />
               )}
               {item}
-              <span className="ml-5 text-line" aria-hidden="true">
-                /
-              </span>
+              <span className="hero-marquee__separator" aria-hidden="true" />
             </span>
           )
         })}
-      </Marquee>
-    </div>
+      </PerspectiveMarquee>
+    </section>
   )
 }

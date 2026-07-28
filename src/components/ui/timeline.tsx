@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { SectionHeading } from './section-heading'
 
 export type TimelineEntry = {
   title: string
@@ -9,10 +10,12 @@ export type TimelineEntry = {
 type TimelineProps = {
   data: TimelineEntry[]
   heading: string
+  signal: string
+  note?: string
   intro?: ReactNode
 }
 
-export function Timeline({ data, heading, intro }: TimelineProps) {
+export function Timeline({ data, heading, signal, note, intro }: TimelineProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const entriesRef = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState(0)
@@ -40,22 +43,8 @@ export function Timeline({ data, heading, intro }: TimelineProps) {
   const progressOpacity = useTransform(scrollYProgress, [0, 0.08], [0, 1])
 
   return (
-    <div ref={containerRef} className="mx-auto w-full max-w-6xl px-6 py-24 md:py-32">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-10">
-        <div className="md:col-span-5">
-          <motion.h2
-            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-12% 0px' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="display text-4xl md:text-5xl"
-          >
-            {heading}
-          </motion.h2>
-        </div>
-
-        {intro ? <div className="md:col-span-5 md:col-start-7">{intro}</div> : null}
-      </div>
+    <div ref={containerRef} className="brand-shell">
+      <SectionHeading heading={heading} signal={signal} note={note} aside={intro} />
 
       <div ref={entriesRef} className="relative mt-16 md:mt-24">
         {data.map((item, index) => (
@@ -74,12 +63,10 @@ export function Timeline({ data, heading, intro }: TimelineProps) {
             </div>
 
             <motion.div
-              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10% 0px' }}
+              initial={false}
               transition={{
-                duration: 0.6,
-                delay: reduceMotion ? 0 : index * 0.06,
+                duration: 0.35,
+                delay: 0,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="min-w-0 pl-5 md:pl-8"

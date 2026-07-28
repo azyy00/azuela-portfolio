@@ -9,8 +9,8 @@ import { Contributions } from './components/Contributions'
 import { Experience } from './components/Experience'
 import { About } from './components/About'
 import { Certificates } from './components/Certificates'
-import { Testimonials } from './components/Testimonials'
 import { Contact } from './components/Contact'
+import HeroScrollAnimation from './components/ui/hero-scroll-animation'
 
 export default function App() {
   useSmoothScroll()
@@ -21,20 +21,35 @@ export default function App() {
       <div className="grain" aria-hidden="true" />
       <Cursor />
 
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <Nav />
 
-      <main>
-        <Hero />
-        <HeroMarquee />
-        <Work />
-        <Skills />
-        <Contributions />
-        <Experience />
+      <main id="main-content">
+        <HeroScrollAnimation>
+          <Hero />
+          <HeroMarquee />
+        </HeroScrollAnimation>
+        <HeroScrollAnimation direction="left">
+          <Work />
+        </HeroScrollAnimation>
+        <HeroScrollAnimation>
+          <Skills />
+        </HeroScrollAnimation>
+        <HeroScrollAnimation direction="left">
+          <Contributions />
+        </HeroScrollAnimation>
+        <HeroScrollAnimation>
+          <Experience />
+        </HeroScrollAnimation>
         <About />
-        <Certificates />
-        {/* Placeholder quotes. Delete this until you have real ones. */}
-        <Testimonials />
-        <Contact />
+        <HeroScrollAnimation direction="left">
+          <Certificates />
+        </HeroScrollAnimation>
+        <HeroScrollAnimation>
+          <Contact />
+        </HeroScrollAnimation>
       </main>
     </>
   )

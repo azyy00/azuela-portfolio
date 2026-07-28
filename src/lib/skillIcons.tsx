@@ -38,6 +38,12 @@ import {
   siVite,
   type SimpleIcon,
 } from 'simple-icons'
+import {
+  siAdobeillustrator,
+  siCanva,
+  siInstagram,
+  siOpenai,
+} from 'simple-icons-v13'
 
 /**
  * Maps each skill string in content.ts to a lucide icon. Keep the keys exactly
@@ -82,8 +88,12 @@ const BRAND_ICONS: Record<string, SimpleIcon> = {
   Vercel: siVercel,
   'Serverless functions': siServerless,
   'Gemini API': siGooglegemini,
+  ChatGPT: siOpenai,
   Claude: siClaude,
   'UI/UX design': siFigma,
+  Canva: siCanva,
+  'Graphic design': siAdobeillustrator,
+  'Social media management': siInstagram,
 }
 
 const SUPPORTING_COLORS: Record<string, string> = {

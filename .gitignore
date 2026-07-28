@@ -16,6 +16,8 @@ _backup-red-theme-*/
 .claude/
 .agents/
 .codex/
+.playwright-cli/
+output/
 .mcp.json
 skills-lock.json
 

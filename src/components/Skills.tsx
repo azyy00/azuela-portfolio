@@ -1,14 +1,11 @@
-import { motion } from 'motion/react'
-
 import { Globe } from '@/components/ui/cobe-globe'
 import { skills } from '../content/content'
-import { rise } from '../lib/motion'
 import { BrandIcon, brandIcon, skillColor, skillIcon } from '../lib/skillIcons'
+import { SectionHeading } from './ui/section-heading'
 
 /**
  * Skills stand in for cities: each is a marker at a spread-out coordinate so
- * the labels do not overlap as the globe turns. Defined at module scope so the
- * reference stays stable — the globe re-initialises if this array changes.
+ * the labels do not overlap as the globe turns.
  */
 const skillMarkers = [
   { id: 'react', location: [37.77, -122.42] as [number, number], label: 'React' },
@@ -26,45 +23,36 @@ const skillMarkers = [
 
 export function Skills() {
   return (
-    <section id="skills" className="relative z-10 border-t border-line">
-      <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <motion.h2 {...rise} className="display text-4xl md:text-5xl">
-            {skills.heading}
-          </motion.h2>
-          <motion.p
-            {...rise}
-            transition={{ ...rise.transition, delay: 0.08 }}
-            className="max-w-sm text-sm text-muted"
-          >
-            {skills.note}
-          </motion.p>
-        </div>
+    <section id="skills" className="brand-section brand-section--skills">
+      <div className="brand-shell">
+        <SectionHeading
+          signal="Tooling and practice"
+          heading={skills.heading}
+          note={skills.note}
+          aside={<span className="meta">Interface / server / design</span>}
+        />
 
-        <div className="mt-16 grid grid-cols-1 items-center gap-12 lg:grid-cols-[1fr_360px]">
-          <div className="grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
-            {skills.groups.map((group, i) => (
-              <motion.div
-                key={group.label}
-                {...rise}
-                transition={{ ...rise.transition, delay: i * 0.06 }}
-                className="bg-surface p-7 md:p-9"
-              >
-                <h3 className="meta">{group.label}</h3>
-                <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-3">
+        <div className="skills-system">
+          <div className="skills-board">
+            {skills.groups.map((group, index) => (
+              <article key={group.label} className="skills-board__group">
+                <header>
+                  <span className="skills-board__index">0{index + 1}</span>
+                  <h3>{group.label}</h3>
+                </header>
+
+                <ul>
                   {group.items.map((item) => {
-                  const Icon = skillIcon(item)
+                    const Icon = skillIcon(item)
                     const brand = brandIcon(item)
+
                     return (
-                      <li
-                        key={item}
-                        className="group/skill flex items-center gap-2 text-base text-ink-soft transition-colors duration-200 hover:text-ink"
-                      >
+                      <li key={item} className="group/skill">
                         {brand ? (
                           <BrandIcon icon={brand} />
                         ) : (
                           <Icon
-                            className="h-4 w-4 shrink-0 transition-[filter] duration-200 group-hover/skill:brightness-125"
+                            className="shrink-0 transition-[filter] duration-200 group-hover/skill:brightness-125"
                             style={{ color: skillColor(item) }}
                             aria-hidden="true"
                           />
@@ -74,18 +62,23 @@ export function Skills() {
                     )
                   })}
                 </ul>
-              </motion.div>
+              </article>
             ))}
           </div>
 
-          <motion.div
-            {...rise}
-            transition={{ ...rise.transition, delay: 0.1 }}
-            className="mx-auto w-full max-w-[320px]"
-          >
-            <Globe markers={skillMarkers} className="w-full" />
-            <p className="meta mt-4 text-center">Drag to spin — my stack</p>
-          </motion.div>
+          <aside className="skills-globe-panel">
+            <div className="brand-panel-bar">
+              <span>stack-map.glb</span>
+              <span>interactive</span>
+            </div>
+            <div className="skills-globe-panel__body">
+              <Globe markers={skillMarkers} className="w-full" />
+            </div>
+            <p className="skills-globe-panel__caption">
+              <span aria-hidden="true" />
+              Drag to map the stack
+            </p>
+          </aside>
         </div>
       </div>
     </section>
