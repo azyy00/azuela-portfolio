@@ -5,15 +5,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import aboutPortrait from '../assets/about-me.png'
 import { about, site } from '../content/content'
 import { useReducedMotion } from '../lib/motion'
+import Lanyard from './ui/Lanyard'
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export function About() {
   const sectionRef = useRef<HTMLElement>(null)
-  const wordRef = useRef<HTMLDivElement>(null)
-  const portraitRef = useRef<HTMLDivElement>(null)
+  const lanyardRef = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
-  const copyRef = useRef<HTMLDivElement>(null)
   const factsRef = useRef<HTMLDListElement>(null)
   const reduced = useReducedMotion()
 
@@ -22,25 +21,7 @@ export function About() {
 
     const context = gsap.context(() => {
       gsap.fromTo(
-        wordRef.current,
-        { yPercent: 18, scale: 0.9, opacity: 0 },
-        {
-          yPercent: 0,
-          scale: 1,
-          opacity: 1,
-          ease: 'none',
-          immediateRender: false,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            end: 'top top',
-            scrub: 0.18,
-          },
-        },
-      )
-
-      gsap.fromTo(
-        [portraitRef.current, headingRef.current, copyRef.current, factsRef.current],
+        [lanyardRef.current, headingRef.current, factsRef.current],
         { y: 36, opacity: 0 },
         {
           y: 0,
@@ -68,26 +49,18 @@ export function About() {
       className="relative z-10 w-full [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)] md:h-[100svh] md:min-h-[44rem]"
     >
       <div className="cinematic-about relative flex min-h-[100svh] flex-col overflow-hidden md:fixed md:inset-x-0 md:bottom-0 md:h-[100svh] md:min-h-[44rem]">
-        <div className="cinematic-about-aurora" aria-hidden="true" />
-        <div className="cinematic-about-vignette" aria-hidden="true" />
-        <div ref={wordRef} className="cinematic-section-word cinematic-about-word" aria-hidden="true">
-          ABOUT
-        </div>
-
         <div className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 content-center items-center gap-10 px-6 pb-36 pt-28 md:grid-cols-12 md:gap-14 md:py-24">
-          {/* Portrait — the human presence the section was missing */}
+          {/* Lanyard — a draggable ID badge carrying the portrait */}
           <div
-            ref={portraitRef}
-            className="order-1 col-span-full mx-auto w-full max-w-[16rem] md:col-span-5 md:mx-0 md:max-w-none"
+            ref={lanyardRef}
+            className="order-1 col-span-full h-[24rem] w-full md:col-span-5 md:h-[36rem]"
           >
-            <figure className="about-portrait">
-              <img
-                src={aboutPortrait}
-                alt={`${site.name}, full-stack developer, in a studio portrait`}
-                className="about-portrait__img"
-              />
-              <span className="about-portrait__wash" aria-hidden="true" />
-            </figure>
+            <Lanyard
+              position={[0, 0, 13]}
+              gravity={[0, -40, 0]}
+              frontImage={aboutPortrait}
+              imageFit="cover"
+            />
           </div>
 
           {/* Story */}
@@ -98,33 +71,22 @@ export function About() {
             </div>
             <h2
               ref={headingRef}
-              className="quote max-w-[16ch] text-3xl text-ink md:text-[2.6rem] md:leading-[1.15]"
+              className="quote max-w-[16ch] text-4xl text-ink md:text-[3.1rem] md:leading-[1.12]"
             >
               {about.lead}
             </h2>
-
-            <div ref={copyRef} className="mt-7">
-              {about.body.map((paragraph) => (
-                <p
-                  key={paragraph}
-                  className="mb-4 max-w-[62ch] text-sm leading-relaxed text-ink-soft last:mb-0 md:text-base"
-                >
-                  {paragraph}
-                </p>
-              ))}
-            </div>
 
             <dl ref={factsRef} className="mt-9 grid grid-cols-2 gap-x-8 gap-y-5">
               {about.facts.map((fact) => (
                 <div key={fact.label} className="border-t border-line pt-3">
                   <dt className="meta">{fact.label}</dt>
-                  <dd className="mt-1.5 text-sm leading-snug text-ink">{fact.value}</dd>
+                  <dd className="mt-1.5 text-base leading-snug text-ink md:text-lg">{fact.value}</dd>
                 </div>
               ))}
             </dl>
 
             <div className="mt-9 flex items-baseline gap-3">
-              <span className="quote text-2xl text-ink md:text-[1.75rem]">{site.name}</span>
+              <span className="quote text-[1.75rem] text-ink md:text-[2.15rem]">{site.name}</span>
               <span className="meta">{site.location}</span>
             </div>
           </div>

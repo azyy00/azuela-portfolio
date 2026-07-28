@@ -507,40 +507,9 @@
    enters the viewport, the panel is exposed like a rising curtain. */
 .cinematic-about {
   z-index: 0;
-  background:
-    radial-gradient(circle at 18% 18%, rgb(229 72 77 / 0.08), transparent 32rem),
-    var(--color-bone);
+  background: var(--color-bone);
   color: var(--color-ink);
   isolation: isolate;
-}
-
-.cinematic-about-aurora {
-  position: absolute;
-  left: 50%;
-  top: 52%;
-  width: min(78rem, 105vw);
-  height: min(46rem, 72vh);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgb(229 72 77 / 0.16) 0%,
-    rgb(229 72 77 / 0.05) 42%,
-    transparent 72%
-  );
-  filter: blur(4rem);
-  opacity: 0.72;
-  transform: translate(-50%, -50%);
-  animation: cinematic-about-breathe 9s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-
-.cinematic-about-vignette {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgb(10 10 11 / 0.12), transparent 28%),
-    radial-gradient(circle at center, transparent 25%, rgb(10 10 11 / 0.62) 100%);
-  pointer-events: none;
 }
 
 .cinematic-section-word {
@@ -571,24 +540,8 @@
 }
 
 @media (max-width: 767px) {
-  .cinematic-about-word {
-    bottom: 4rem;
-  }
-
   .cinematic-work-word {
     bottom: 2rem;
-  }
-
-}
-
-@keyframes cinematic-about-breathe {
-  from {
-    opacity: 0.58;
-    transform: translate(-50%, -50%) scale(0.96);
-  }
-  to {
-    opacity: 0.82;
-    transform: translate(-50%, -50%) scale(1.06);
   }
 }
 
@@ -1463,14 +1416,7 @@
 }
 
 .cinematic-about {
-  background:
-    radial-gradient(35rem 30rem at 17% 52%, rgb(94 122 162 / 0.07), transparent 72%),
-    radial-gradient(32rem 26rem at 84% 22%, rgb(229 72 77 / 0.065), transparent 72%),
-    var(--color-bone);
-}
-
-.cinematic-about-aurora {
-  opacity: 0.38;
+  background: var(--color-bone);
 }
 
 .cinematic-section-word {
