@@ -1,57 +1,35 @@
 'use client'
 
-import { forwardRef, useRef, type ReactNode } from 'react'
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-  type MotionStyle,
-} from 'motion/react'
+import { forwardRef, type ReactNode } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
 
 import { cn } from '@/lib/utils'
 
 type HeroScrollAnimationProps = {
   children: ReactNode
   className?: string
-  direction?: 'left' | 'right'
 }
 
 /**
- * Applies the supplied scale-and-rotate scroll treatment to an outer page
- * section. The section's own content and layout remain completely untouched.
+ * Gives each page section a short pop-up reveal whenever it re-enters the
+ * viewport. Unlike the previous continuous rotation, it settles to a static
+ * layer so section edges remain seamless and scrolling stays responsive.
  */
 const HeroScrollAnimation = forwardRef<HTMLDivElement, HeroScrollAnimationProps>(
-  ({ children, className, direction = 'right' }, forwardedRef) => {
-    const containerRef = useRef<HTMLDivElement>(null)
+  ({ children, className }, forwardedRef) => {
     const reducedMotion = useReducedMotion()
-    const sign = direction === 'right' ? 1 : -1
-    const { scrollYProgress } = useScroll({
-      target: containerRef,
-      offset: ['start end', 'end start'],
-    })
-
-    const scale = useTransform(scrollYProgress, [0, 0.16, 0.84, 1], [0.965, 1, 1, 0.94])
-    const rotate = useTransform(
-      scrollYProgress,
-      [0, 0.16, 0.84, 1],
-      [1.6 * sign, 0, 0, -1.8 * sign],
-    )
-    const y = useTransform(scrollYProgress, [0, 0.16, 0.84, 1], [36, 0, 0, -28])
-
-    const style: MotionStyle | undefined = reducedMotion
-      ? undefined
-      : { scale, rotate, y, transformPerspective: 1400 }
 
     return (
       <motion.div
-        ref={(node) => {
-          containerRef.current = node
-          if (typeof forwardedRef === 'function') forwardedRef(node)
-          else if (forwardedRef) forwardedRef.current = node
-        }}
+        ref={forwardedRef}
         className={cn('page-scroll-effect', className)}
-        style={style}
+        initial={reducedMotion ? false : { opacity: 0, y: 28, scale: 0.985 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: false, amount: 0.08, margin: '0px 0px -5% 0px' }}
+        transition={{
+          duration: reducedMotion ? 0 : 0.56,
+          ease: [0.16, 1, 0.3, 1],
+        }}
       >
         {children}
       </motion.div>

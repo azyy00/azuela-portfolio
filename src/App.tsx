@@ -31,20 +31,20 @@ export default function App() {
           <Hero />
           <HeroMarquee />
         </HeroScrollAnimation>
-        <HeroScrollAnimation direction="left">
+        <HeroScrollAnimation>
           <Work />
         </HeroScrollAnimation>
         <HeroScrollAnimation>
           <Skills />
         </HeroScrollAnimation>
-        <HeroScrollAnimation direction="left">
+        <HeroScrollAnimation>
           <Contributions />
         </HeroScrollAnimation>
         <HeroScrollAnimation>
           <Experience />
         </HeroScrollAnimation>
         <About />
-        <HeroScrollAnimation direction="left">
+        <HeroScrollAnimation>
           <Certificates />
         </HeroScrollAnimation>
         <HeroScrollAnimation>

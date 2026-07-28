@@ -55,6 +55,7 @@ export function Globe({
   const phiOffsetRef = useRef(0)
   const thetaOffsetRef = useRef(0)
   const isPausedRef = useRef(false)
+  const isVisibleRef = useRef(false)
 
   const handlePointerDown = useCallback((e: ReactPointerEvent) => {
     pointerInteracting.current = { x: e.clientX, y: e.clientY }
@@ -107,13 +108,55 @@ export function Globe({
 
     let globe: ReturnType<typeof createGlobe> | null = null
     let animationId = 0
+    let revealTimeout = 0
+    let visibilityObserver: IntersectionObserver | null = null
     let phi = 0
+
+    const animate = () => {
+      animationId = 0
+      if (!globe || !isVisibleRef.current || document.hidden) return
+
+      if (!isPausedRef.current) {
+        phi += speed
+        if (Math.abs(velocity.current.phi) > 0.0001 || Math.abs(velocity.current.theta) > 0.0001) {
+          phiOffsetRef.current += velocity.current.phi
+          thetaOffsetRef.current += velocity.current.theta
+          velocity.current.phi *= 0.95
+          velocity.current.theta *= 0.95
+        }
+        const thetaMin = -0.4
+        const thetaMax = 0.4
+        if (thetaOffsetRef.current < thetaMin) {
+          thetaOffsetRef.current += (thetaMin - thetaOffsetRef.current) * 0.1
+        } else if (thetaOffsetRef.current > thetaMax) {
+          thetaOffsetRef.current += (thetaMax - thetaOffsetRef.current) * 0.1
+        }
+      }
+
+      globe.update({
+        phi: phi + phiOffsetRef.current + dragOffset.current.phi,
+        theta: theta + thetaOffsetRef.current + dragOffset.current.theta,
+      })
+      animationId = requestAnimationFrame(animate)
+    }
+
+    const syncAnimation = () => {
+      const shouldRun = Boolean(globe && isVisibleRef.current && !document.hidden)
+
+      if (shouldRun && !animationId) {
+        animationId = requestAnimationFrame(animate)
+      } else if (!shouldRun && animationId) {
+        cancelAnimationFrame(animationId)
+        animationId = 0
+      }
+    }
 
     const init = () => {
       const width = canvas.offsetWidth
       if (width === 0 || globe) return
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const maxDpr = window.innerWidth < 768 ? 1.25 : 1.5
+      const dpr = Math.min(window.devicePixelRatio || 1, maxDpr)
       globe = createGlobe(canvas, {
         devicePixelRatio: dpr,
         width: width * dpr,
@@ -132,52 +175,37 @@ export function Globe({
         opacity: 0.9,
       })
 
-      const animate = () => {
-        if (!isPausedRef.current) {
-          phi += speed
-          if (Math.abs(velocity.current.phi) > 0.0001 || Math.abs(velocity.current.theta) > 0.0001) {
-            phiOffsetRef.current += velocity.current.phi
-            thetaOffsetRef.current += velocity.current.theta
-            velocity.current.phi *= 0.95
-            velocity.current.theta *= 0.95
-          }
-          const thetaMin = -0.4
-          const thetaMax = 0.4
-          if (thetaOffsetRef.current < thetaMin) {
-            thetaOffsetRef.current += (thetaMin - thetaOffsetRef.current) * 0.1
-          } else if (thetaOffsetRef.current > thetaMax) {
-            thetaOffsetRef.current += (thetaMax - thetaOffsetRef.current) * 0.1
-          }
-        }
-        globe!.update({
-          phi: phi + phiOffsetRef.current + dragOffset.current.phi,
-          theta: theta + thetaOffsetRef.current + dragOffset.current.theta,
-        })
-        animationId = requestAnimationFrame(animate)
-      }
-
-      animate()
-      setTimeout(() => {
+      revealTimeout = window.setTimeout(() => {
         if (canvas) canvas.style.opacity = '1'
       })
+      syncAnimation()
     }
 
-    let ro: ResizeObserver | null = null
-    if (canvas.offsetWidth > 0) {
-      init()
-    } else {
-      ro = new ResizeObserver((entries) => {
-        if ((entries[0]?.contentRect.width ?? 0) > 0) {
-          ro?.disconnect()
-          init()
-        }
-      })
-      ro.observe(canvas)
-    }
+    const ro = new ResizeObserver((entries) => {
+      if (isVisibleRef.current && (entries[0]?.contentRect.width ?? 0) > 0) {
+        init()
+      }
+    })
+    ro.observe(canvas)
+
+    visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry?.isIntersecting ?? false
+        if (isVisibleRef.current) init()
+        syncAnimation()
+      },
+      { rootMargin: '160px 0px' },
+    )
+    visibilityObserver.observe(canvas)
+    document.addEventListener('visibilitychange', syncAnimation)
 
     return () => {
       if (animationId) cancelAnimationFrame(animationId)
-      if (ro) ro.disconnect()
+      if (revealTimeout) window.clearTimeout(revealTimeout)
+      ro.disconnect()
+      if (visibilityObserver) visibilityObserver.disconnect()
+      document.removeEventListener('visibilitychange', syncAnimation)
+      isVisibleRef.current = false
       if (globe) globe.destroy()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

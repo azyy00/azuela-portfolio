@@ -27,7 +27,6 @@ export function HeroMarquee() {
                 />
               )}
               {item}
-              <span className="hero-marquee__separator" aria-hidden="true" />
             </span>
           )
         })}

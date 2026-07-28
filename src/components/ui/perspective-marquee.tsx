@@ -43,14 +43,6 @@ export function PerspectiveMarquee({
           {children}
         </Marquee>
       </div>
-      <span
-        className="perspective-marquee__fade perspective-marquee__fade--horizontal"
-        aria-hidden="true"
-      />
-      <span
-        className="perspective-marquee__fade perspective-marquee__fade--vertical"
-        aria-hidden="true"
-      />
     </div>
   )
 }

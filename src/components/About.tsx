@@ -34,7 +34,7 @@ export function About() {
             trigger: sectionRef.current,
             start: 'top bottom',
             end: 'top top',
-            scrub: 0.8,
+            scrub: 0.18,
           },
         },
       )
@@ -52,7 +52,7 @@ export function About() {
             trigger: sectionRef.current,
             start: 'top 82%',
             end: 'top 18%',
-            scrub: 0.8,
+            scrub: 0.18,
           },
         },
       )

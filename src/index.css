@@ -45,9 +45,11 @@
   html {
     /* Lenis drives scrolling; native smooth would fight it. */
     scroll-behavior: auto;
+    overflow-x: clip;
   }
 
   body {
+    overflow-x: clip;
     background-color: var(--color-bone);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -260,25 +262,6 @@
     linear-gradient(180deg, rgb(10 10 11 / 0.1) 66%, var(--color-bone) 100%);
 }
 
-.home-hero::after {
-  content: '';
-  position: absolute;
-  z-index: 0;
-  right: -8%;
-  bottom: 13%;
-  width: 74%;
-  height: 1px;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(185 205 235 / 0.32) 42%,
-    rgb(255 255 255 / 0.2) 72%,
-    transparent
-  );
-  box-shadow: 0 0 2.6rem 0.65rem rgb(122 157 210 / 0.09);
-}
-
 .hero-shell {
   width: min(calc(100% - 7rem), 80rem);
   margin-inline: auto;
@@ -388,8 +371,8 @@
   position: relative;
   height: clamp(4.5rem, 7vw, 5.5rem);
   overflow: hidden;
-  border-block: 1px solid rgb(237 235 230 / 0.08);
-  background: #080809;
+  border: 0;
+  background: transparent;
   isolation: isolate;
 }
 
@@ -400,6 +383,8 @@
   align-items: center;
   overflow: hidden;
   perspective: var(--marquee-perspective);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
 }
 
 .perspective-marquee__stage {
@@ -413,35 +398,6 @@
 .perspective-marquee__track,
 .perspective-marquee__track .animate-marquee {
   min-height: clamp(5rem, 8vw, 6.25rem);
-}
-
-.perspective-marquee__fade {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.perspective-marquee__fade--horizontal {
-  background: linear-gradient(
-    90deg,
-    #080809 0%,
-    rgb(8 8 9 / 0.2) 12%,
-    transparent 25%,
-    transparent 76%,
-    rgb(8 8 9 / 0.32) 90%,
-    #080809 100%
-  );
-}
-
-.perspective-marquee__fade--vertical {
-  background: linear-gradient(
-    180deg,
-    #080809 0%,
-    transparent 30%,
-    transparent 72%,
-    #080809 100%
-  );
 }
 
 .hero-marquee__item {
@@ -467,15 +423,6 @@
   flex: 0 0 auto;
 }
 
-.hero-marquee__separator {
-  width: 0.28rem;
-  height: 0.28rem;
-  margin-left: clamp(1.15rem, 2.5vw, 2.25rem);
-  border-radius: 1px;
-  background: var(--color-accent);
-  opacity: 0.72;
-}
-
 @media (max-width: 767px) {
   .home-hero {
     height: auto;
@@ -487,10 +434,6 @@
     background:
       linear-gradient(180deg, transparent 18%, rgb(10 10 11 / 0.2) 33%, var(--color-bone) 53%),
       linear-gradient(90deg, rgb(10 10 11 / 0.35), transparent);
-  }
-
-  .home-hero::after {
-    display: none;
   }
 
   .hero-shell {
@@ -544,9 +487,6 @@
     font-size: 0.9rem;
   }
 
-  .hero-marquee__separator {
-    margin-left: 1rem;
-  }
 }
 
 .work-section {
@@ -1211,15 +1151,14 @@
 
 .page-scroll-effect {
   position: relative;
-  transform-origin: 50% 12%;
-  transform-style: preserve-3d;
+  transform-origin: 50% 50%;
 }
 
 .brand-section {
   position: relative;
   z-index: 10;
   overflow: hidden;
-  border-top: 1px solid var(--color-line);
+  border-top: 0;
   background: var(--color-bone);
   isolation: isolate;
 }
@@ -1230,15 +1169,11 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    linear-gradient(90deg, transparent 49.95%, rgb(237 235 230 / 0.025) 50%, transparent 50.05%),
-    radial-gradient(38rem 32rem at 88% 18%, rgb(104 131 170 / 0.06), transparent 72%);
+  background: radial-gradient(38rem 32rem at 88% 18%, rgb(104 131 170 / 0.06), transparent 72%);
 }
 
 .brand-section:nth-of-type(even)::before {
-  background:
-    linear-gradient(90deg, transparent 49.95%, rgb(237 235 230 / 0.025) 50%, transparent 50.05%),
-    radial-gradient(42rem 34rem at 8% 82%, rgb(229 72 77 / 0.055), transparent 72%);
+  background: radial-gradient(42rem 34rem at 8% 82%, rgb(229 72 77 / 0.055), transparent 72%);
 }
 
 .brand-shell {
@@ -1258,8 +1193,8 @@
   align-items: end;
   gap: 1.25rem 3.5rem;
   margin-bottom: clamp(3.25rem, 6vw, 5.5rem);
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--color-line);
+  padding-top: 0;
+  border-top: 0;
 }
 
 .brand-section-heading__signal,
@@ -1752,7 +1687,7 @@
   gap: 1rem;
   margin-top: clamp(6rem, 12vw, 10rem);
   padding-top: 1rem;
-  border-top: 1px solid var(--color-line);
+  border-top: 0;
   color: var(--color-muted);
   font-family: var(--font-mono);
   font-size: 0.62rem;

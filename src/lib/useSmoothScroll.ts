@@ -9,7 +9,8 @@ gsap.registerPlugin(ScrollTrigger)
 
 const NAVIGATE_EVENT = 'portfolio:navigate'
 const NAV_OFFSET = -72
-const NAV_DURATION = 1.15
+const NAV_DURATION = 0.62
+const SCROLL_LERP = 0.28
 const easeOutExpo = (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
 
 type NavigateDetail = {
@@ -55,12 +56,14 @@ export function useSmoothScroll() {
     }
 
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: easeOutExpo,
+      // A higher lerp keeps wheel input attached to the user's hand while
+      // preserving a short smoothing tail. Duration-based smoothing felt
+      // delayed because every wheel event was stretched over 1.2 seconds.
+      lerp: SCROLL_LERP,
       smoothWheel: true,
-      wheelMultiplier: 0.86,
+      wheelMultiplier: 1,
       syncTouch: false,
-      touchMultiplier: 1.2,
+      touchMultiplier: 1,
       overscroll: true,
     })
 
@@ -79,7 +82,6 @@ export function useSmoothScroll() {
         duration: NAV_DURATION,
         easing: easeOutExpo,
         immediate,
-        onComplete: () => ScrollTrigger.refresh(),
       })
     }
 
