@@ -1,26 +1,37 @@
 'use client'
 
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowUpRight, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import type { Project } from '../../content/content'
+import { brandIcon, skillColor } from '../../lib/skillIcons'
 import { GlassButton, GlassButtonLink } from './glass-button'
 
-// Gapless bento spans for the expanded grid. lg (3 cols): 2x2 + 1x2 + three
-// 1x1 = 9 cells = a perfect 3x3. Mobile (2 cols): the tall card and the last
-// card go full-width so it tiles to 2x5. grid-flow-dense backfills odd counts.
-const BENTO = [
-  'col-span-2 row-span-2',
-  'col-span-2 row-span-1 lg:col-span-1 lg:row-span-2',
-  'col-span-1 row-span-1',
-  'col-span-1 row-span-1',
-  'col-span-2 row-span-1 lg:col-span-1',
+const transition = { type: 'spring', stiffness: 160, damping: 20, mass: 1 } as const
+
+// Per-project gradient wash for the preview card. Deep, saturated pairs so white
+// copy stays legible over them — the "colorful" cue without turning pastel.
+const ACCENTS: Array<[string, string]> = [
+  ['#c81e4a', '#4f0f2b'], // rose → wine
+  ['#2f6df0', '#4a27b8'], // blue → indigo
+  ['#0f8a7e', '#0b3f49'], // teal → deep teal
+  ['#d9662a', '#7c1d2c'], // amber → maroon
+  ['#7b3ff0', '#33217f'], // violet
 ]
 
-const transition = { type: 'spring', stiffness: 160, damping: 20, mass: 1 } as const
+// Spring pop used as each project scrolls into view.
+const reveal = {
+  hidden: { opacity: 0, y: 44, scale: 0.975 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 130, damping: 18, mass: 0.9 },
+  },
+} as const
 
 function ProjectLink({ href, children }: { href: string; children: string }) {
   return (
@@ -193,10 +204,110 @@ function ProjectDetailDialog({
   )
 }
 
+function WorkCard({
+  project,
+  index,
+  reduced,
+  onOpen,
+}: {
+  project: Project
+  index: number
+  reduced: boolean | null
+  onOpen: (project: Project) => void
+}) {
+  const [from, to] = ACCENTS[index % ACCENTS.length]
+  const fit = project.mediaFit === 'contain' ? 'object-contain' : 'object-cover object-top'
+
+  return (
+    <motion.article
+      className="work-item__inner"
+      variants={reduced ? undefined : reveal}
+      initial={reduced ? false : 'hidden'}
+      whileInView={reduced ? undefined : 'show'}
+      viewport={{ once: true, margin: '0px 0px -14% 0px' }}
+    >
+        <header className="work-item__meta">
+          <span className="work-item__index">{String(index + 1).padStart(2, '0')}</span>
+          <span className="work-item__cat">{project.role}</span>
+          <span className="work-item__year">© {project.year}</span>
+        </header>
+
+        <h3 className="work-item__title display">{project.title}</h3>
+
+        <button
+          type="button"
+          aria-label={`View ${project.title}`}
+          aria-haspopup="dialog"
+          onClick={() => onOpen(project)}
+          className="work-card group"
+          style={{ ['--wk-from' as string]: from, ['--wk-to' as string]: to }}
+        >
+          <span className="work-card__wash" aria-hidden="true" />
+
+          <span className="work-card__head">
+            <span className="work-card__desc">{project.summary}</span>
+            <span className="work-card__arrow" aria-hidden="true">
+              <ArrowUpRight className="h-4 w-4" />
+            </span>
+          </span>
+
+          <span className="work-card__shot">
+            {project.video ? (
+              <video
+                src={project.video}
+                poster={project.image}
+                autoPlay={!reduced}
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                className={cn('work-card__media', fit)}
+                aria-label={`${project.title} preview`}
+              />
+            ) : (
+              <img
+                src={project.image}
+                alt={`${project.title} preview`}
+                loading="lazy"
+                draggable={false}
+                className={cn('work-card__media', fit)}
+              />
+            )}
+          </span>
+        </button>
+
+        <ul className="work-stack" aria-label={`${project.title} technology stack`}>
+          {project.stack.map((tech) => {
+            const icon = brandIcon(tech)
+            return (
+              <li key={tech} className="work-chip">
+                {icon ? (
+                  <svg viewBox="0 0 24 24" aria-hidden="true" style={{ color: skillColor(tech) }}>
+                    <path d={icon.path} fill="currentColor" />
+                  </svg>
+                ) : null}
+                {tech}
+              </li>
+            )
+          })}
+        </ul>
+    </motion.article>
+  )
+}
+
 export function ExpandableGallery({ projects }: { projects: Project[] }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const reduced = useReducedMotion()
   const activeTriggerRef = useRef<HTMLElement | null>(null)
+  const timelineRef = useRef<HTMLDivElement>(null)
+
+  // Drive the accent rail from the section's scroll progress — the "timeline"
+  // fills as you move down through the projects.
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ['start 22%', 'end 78%'],
+  })
+  const lineOpacity = useTransform(scrollYProgress, [0, 0.05], [0, 1])
 
   const openProject = (project: Project) => {
     activeTriggerRef.current = document.activeElement as HTMLElement | null
@@ -208,76 +319,47 @@ export function ExpandableGallery({ projects }: { projects: Project[] }) {
     window.requestAnimationFrame(() => activeTriggerRef.current?.focus())
   }
 
+  // Alternate projects into two columns; the centre rail runs between them.
+  const items = projects.map((project, index) => ({ project, index }))
+  const columns: Array<{ side: 'left' | 'right'; items: typeof items }> = [
+    { side: 'left', items: items.filter((it) => it.index % 2 === 0) },
+    { side: 'right', items: items.filter((it) => it.index % 2 === 1) },
+  ]
+
   return (
     <>
-      <div className="grid w-full grid-flow-dense grid-cols-2 auto-rows-[9.5rem] gap-3 sm:auto-rows-[12rem] lg:auto-rows-[13.5rem] lg:grid-cols-3">
-        {projects.map((project, index) => {
-          const bento = BENTO[index] ?? 'col-span-1 row-span-1'
-          const fit = project.mediaFit === 'contain' ? 'bg-bone object-contain' : 'object-cover'
+      <div className="wtl" ref={timelineRef}>
+        <div className="wtl__line" aria-hidden="true">
+          <motion.div
+            className="wtl__progress"
+            style={{
+              scaleY: reduced ? 1 : scrollYProgress,
+              opacity: reduced ? 1 : lineOpacity,
+            }}
+          />
+        </div>
 
-          return (
-            <motion.button
-              key={`card-${project.slug}`}
-              type="button"
-              aria-label={`View ${project.title}`}
-              aria-haspopup="dialog"
-              initial={false}
-              onClick={() => openProject(project)}
-              className={cn(
-                'project-card group relative cursor-pointer overflow-hidden border border-line bg-surface text-left',
-                bento,
-              )}
-            >
-              <div className="relative h-full w-full">
-                {project.video ? (
-                  <video
-                    src={project.video}
-                    poster={project.image}
-                    autoPlay={!reduced}
-                    loop
-                    muted
-                    playsInline
-                    preload="metadata"
-                    className={cn(
-                      'h-full w-full select-none transition-transform duration-700 ease-out group-hover:scale-105',
-                      fit,
-                    )}
-                    aria-label={`${project.title} preview`}
+        <div className="wtl__columns">
+          {columns.map((column) => (
+            <div className={`wtl__col wtl__col--${column.side}`} key={column.side}>
+              {column.items.map(({ project, index }) => (
+                <div
+                  className={`wtl__item wtl__item--${column.side}`}
+                  style={{ order: index }}
+                  key={`card-${project.slug}`}
+                >
+                  <span className="wtl__node" aria-hidden="true" />
+                  <WorkCard
+                    project={project}
+                    index={index}
+                    reduced={reduced}
+                    onOpen={openProject}
                   />
-                ) : (
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className={cn(
-                      'h-full w-full select-none brightness-[0.72] saturate-[0.55] transition-all duration-700 ease-out group-hover:scale-105 group-hover:brightness-100 group-hover:saturate-100',
-                      fit,
-                    )}
-                    draggable={false}
-                  />
-                )}
-              </div>
-
-              <div className="project-card__rail pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between">
-                <span>{project.role}</span>
-                <span>Case {String(index + 1).padStart(2, '0')}</span>
-              </div>
-
-              <div className="project-card__overlay pointer-events-none absolute inset-0 flex flex-col justify-end p-4 md:p-5">
-                <div className="flex items-end justify-between gap-2">
-                  <div className="min-w-0">
-                    <h3 className="display truncate text-lg leading-tight text-white md:text-xl">
-                      {project.title}
-                    </h3>
-                    <p className="meta mt-1 text-white/55">{project.year}</p>
-                  </div>
-                  <span className="flex h-8 w-8 shrink-0 translate-y-1 items-center justify-center rounded-full border border-white/25 text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-                  </span>
                 </div>
-              </div>
-            </motion.button>
-          )
-        })}
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       {typeof document !== 'undefined'

@@ -1258,12 +1258,13 @@
   content: '';
   position: absolute;
   left: 0;
-  top: 50%;
+  top: 0;
   width: 2px;
-  height: 0;
+  height: 100%;
   background: var(--color-accent);
-  transform: translateY(-50%);
-  transition: height 0.45s var(--ease-out-expo);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.45s var(--ease-out-expo);
 }
 
 .xp-row:hover::before {
@@ -1441,39 +1442,263 @@
 }
 
 /* Work / case files */
-.project-card,
 .project-dialog {
   border-radius: 0.65rem;
 }
 
-.project-card {
-  transition:
-    border-color 240ms var(--ease-out-expo),
-    transform 360ms var(--ease-out-expo);
+/* Curated-work timeline: alternating side-by-side records on a centre rail that
+   fills with scroll. Cards pop up as they enter view. */
+.wtl {
+  position: relative;
 }
 
-.project-card:hover {
-  border-color: color-mix(in oklab, var(--color-accent) 40%, var(--color-line));
-  transform: translateY(-3px);
+.wtl__columns {
+  --gap: clamp(2.5rem, 5vw, 4.5rem);
+  --node: 0.8rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--gap);
 }
 
-.project-card__rail {
+.wtl__col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 5vw, 5rem);
+  min-width: 0;
+}
+
+/* Offset the right column so records interleave down the rail. */
+.wtl__col--right {
+  margin-top: clamp(4rem, 8vw, 7rem);
+}
+
+.wtl__item {
+  position: relative;
+  min-width: 0;
+}
+
+.wtl__node {
+  position: absolute;
+  top: 0.4rem;
   z-index: 2;
-  min-height: 2.35rem;
-  gap: 1rem;
-  padding-inline: 0.85rem;
-  border-bottom: 1px solid rgb(255 255 255 / 0.12);
-  background: rgb(7 7 8 / 0.58);
-  color: rgb(255 255 255 / 0.65);
-  font-family: var(--font-mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  backdrop-filter: blur(10px);
+  width: var(--node);
+  height: var(--node);
+  border-radius: 50%;
+  border: 1px solid var(--color-accent);
+  background: var(--color-accent-soft);
+  box-shadow: 0 0 0 4px var(--color-bone);
 }
 
-.project-card__overlay {
-  background: linear-gradient(180deg, transparent 35%, rgb(5 5 6 / 0.9) 100%);
+.wtl__item--left .wtl__node {
+  right: calc(-1 * (var(--gap) / 2 + var(--node) / 2));
+}
+
+.wtl__item--right .wtl__node {
+  left: calc(-1 * (var(--gap) / 2 + var(--node) / 2));
+}
+
+.wtl__line {
+  position: absolute;
+  left: 50%;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--color-line);
+  z-index: 0;
+}
+
+.wtl__progress {
+  width: 100%;
+  height: 100%;
+  transform-origin: top center;
+  background: var(--color-accent);
+  will-change: transform;
+}
+
+@media (max-width: 767px) {
+  .wtl__columns {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    padding-left: 1.6rem;
+  }
+
+  .wtl__col {
+    display: contents;
+  }
+
+  .wtl__col--right {
+    margin-top: 0;
+  }
+
+  .wtl__line {
+    left: 0.4rem;
+    transform: none;
+  }
+
+  .wtl__node {
+    display: none;
+  }
+}
+
+.work-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.work-item__index {
+  color: var(--color-accent);
+}
+
+.work-item__year {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.work-item__title {
+  margin-bottom: 1.1rem;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  line-height: 1.05;
+  color: var(--color-ink);
+}
+
+.work-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 1.1rem;
+  background: var(--color-surface);
+  text-align: left;
+  cursor: pointer;
+  isolation: isolate;
+  transition:
+    transform 0.5s var(--ease-out-expo),
+    border-color 0.4s var(--ease-out-expo),
+    box-shadow 0.5s var(--ease-out-expo);
+}
+
+/* The colored wash sits behind the copy + screenshot. */
+.work-card__wash {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(120% 80% at 15% 0%, rgb(255 255 255 / 0.12), transparent 55%),
+    linear-gradient(158deg, var(--wk-from), var(--wk-to));
+}
+
+.work-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--wk-from) 55%, var(--color-line));
+  box-shadow: 0 26px 60px -32px color-mix(in oklab, var(--wk-from) 70%, #000);
+}
+
+.work-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.3rem 1.4rem 1.15rem;
+}
+
+.work-card__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 42ch;
+  color: rgb(255 255 255 / 0.94);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  text-shadow: 0 1px 14px rgb(0 0 0 / 0.35);
+}
+
+.work-card__arrow {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  color: #fff;
+  background: rgb(255 255 255 / 0.08);
+  transition: transform 0.4s var(--ease-out-expo), background 0.4s var(--ease-out-expo);
+}
+
+.work-card:hover .work-card__arrow {
+  transform: translate(2px, -2px);
+  background: rgb(255 255 255 / 0.2);
+}
+
+/* Screenshot is pinned to the bottom and bleeds off the card edge. */
+.work-card__shot {
+  margin: 0 1.15rem;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-bottom: 0;
+  border-radius: 0.7rem 0.7rem 0 0;
+  box-shadow: 0 -12px 40px -18px rgb(0 0 0 / 0.6);
+}
+
+.work-card__media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--color-bone);
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.work-card:hover .work-card__media {
+  transform: scale(1.035);
+}
+
+.work-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.34rem 0.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  transition: border-color 0.3s var(--ease-out-expo), background 0.3s var(--ease-out-expo);
+}
+
+.work-chip:hover {
+  border-color: color-mix(in oklab, var(--color-ink) 22%, var(--color-line));
+  background: var(--color-surface-alt);
+}
+
+.work-chip svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  flex: 0 0 auto;
 }
 
 /* Skills / tool map */
