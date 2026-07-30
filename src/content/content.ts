@@ -18,6 +18,8 @@ import logoBucketlist from '../assets/logo-bucketlist.jpg'
 import logoGcc from '../assets/gcc-logo.png'
 import logoSanjose from '../assets/logo-sanjose.jpg'
 import adelphasThumb from '../assets/adelphas.png'
+// Live hero of the agricultural-programs research site (bacom-researchs-site).
+import farmerThumb from '../assets/farmer.png'
 
 export type Project = {
   slug: string
@@ -141,7 +143,7 @@ export const projects: Project[] = [
       'A research site presenting a qualitative study on communication challenges in agricultural programs run by the Local Agricultural Office in Goa, Partido.',
     stack: ['React', 'Chakra UI'],
     span: 'normal',
-    image: 'https://picsum.photos/seed/farmer-research/900/900',
+    image: farmerThumb,
     live: 'https://bacom-researchs-site.vercel.app',
     source: 'https://github.com/azyy00/farmer-website',
   },
