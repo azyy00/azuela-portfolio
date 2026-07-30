@@ -1,9 +1,6 @@
-import type { MouseEvent } from 'react'
-import { motion, useMotionValue, useReducedMotion, useSpring } from 'motion/react'
-import { Award, ArrowUpRight } from 'lucide-react'
-
 import { certificates } from '../content/content'
 import { SectionHeading } from './ui/section-heading'
+import { CertificateSlider, type CertSlide } from './ui/certificate-slider'
 
 // Rendered JPG previews and the source PDFs, keyed by their shared basename.
 const images = import.meta.glob('../assets/certificates/*.jpg', {
@@ -30,83 +27,30 @@ function byBasename(map: Record<string, string>): Record<string, string> {
 const imageByName = byBasename(images)
 const pdfByName = byBasename(pdfs)
 
-type Item = (typeof certificates.items)[number]
-
-const ease = [0.16, 1, 0.3, 1] as const
-
-function CertificateCard({ item }: { item: Item }) {
-  const reduced = useReducedMotion()
-  const image = imageByName[item.file]
-  const pdf = pdfByName[item.file]
-
-  // Pointer-driven tilt. Springs smooth the motion; reset to flat on leave.
-  const rx = useMotionValue(0)
-  const ry = useMotionValue(0)
-  const rotateX = useSpring(rx, { stiffness: 150, damping: 15 })
-  const rotateY = useSpring(ry, { stiffness: 150, damping: 15 })
-
-  const handleMove = (event: MouseEvent<HTMLAnchorElement>) => {
-    if (reduced) return
-    const rect = event.currentTarget.getBoundingClientRect()
-    const px = (event.clientX - rect.left) / rect.width
-    const py = (event.clientY - rect.top) / rect.height
-    ry.set((px - 0.5) * 9)
-    rx.set(-(py - 0.5) * 9)
-    event.currentTarget.style.setProperty('--mx', `${px * 100}%`)
-    event.currentTarget.style.setProperty('--my', `${py * 100}%`)
-  }
-
-  const handleLeave = () => {
-    rx.set(0)
-    ry.set(0)
-  }
-
-  return (
-    <motion.a
-      href={pdf ?? image}
-      target="_blank"
-      rel="noreferrer noopener"
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
-      initial={false}
-      transition={{ duration: 0.35, ease, delay: 0 }}
-      style={reduced ? undefined : { rotateX, rotateY, transformPerspective: 1000 }}
-      className="cert-card group"
-      aria-label={`${item.title} — ${certificates.issuer} certificate (opens PDF)`}
-    >
-      <div className="cert-card__inner">
-        <div className="cert-card__media">
-          {image ? (
-            <img
-              src={image}
-              alt={`${item.title} statement of accomplishment from ${certificates.issuer}`}
-              loading="lazy"
-              className="aspect-[1440/831] w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
-            />
-          ) : null}
-          <span className="cert-card__badge">
-            <Award className="h-3.5 w-3.5" aria-hidden="true" />
-            {certificates.issuer}
-          </span>
-        </div>
-
-        <div className="flex flex-1 flex-col p-5">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="text-base leading-snug text-ink">{item.title}</h3>
-            <span className="cert-card__go" aria-hidden="true">
-              <ArrowUpRight className="h-4 w-4" />
-            </span>
-          </div>
-          <p className="meta mt-auto pt-4">
-            {item.length} · Completed {item.date}
-          </p>
-        </div>
-      </div>
-
-      <span className="cert-card__spot" aria-hidden="true" />
-    </motion.a>
-  )
+// A short track label per credential for the minimap.
+const CATEGORY: Record<string, string> = {
+  'Python Cert': 'Programming',
+  SQL: 'Databases',
+  'Intermediate SQL': 'Databases',
+  Git: 'Tooling',
+  'Data Science': 'Data',
+  'Data Engineer': 'Data',
+  'Machine Learning': 'Machine Learning',
+  'Data Visualization': 'Data',
+  'Cloud Computing': 'Cloud',
 }
+
+// Built once from static content — a stable reference for the slider effect.
+const slides: CertSlide[] = certificates.items.map((item, index) => ({
+  id: item.file,
+  number: String(index + 1).padStart(2, '0'),
+  title: item.title,
+  category: CATEGORY[item.file] ?? certificates.issuer,
+  year: item.date.split(' ').pop() ?? '',
+  description: `${item.length} · ${item.date}`,
+  image: imageByName[item.file] ?? '',
+  href: pdfByName[item.file] ?? imageByName[item.file] ?? '#',
+}))
 
 export function Certificates() {
   return (
@@ -119,11 +63,7 @@ export function Certificates() {
           aside={<span className="meta">{certificates.items.length} credentials / DataCamp</span>}
         />
 
-        <div className="certificates-grid">
-          {certificates.items.map((item) => (
-            <CertificateCard key={item.file} item={item} />
-          ))}
-        </div>
+        <CertificateSlider slides={slides} />
       </div>
     </section>
   )

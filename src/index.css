@@ -1018,6 +1018,222 @@
   opacity: 1;
 }
 
+/* Certificate slider — a section-scoped vertical parallax loop of credentials
+   with a synced minimap. Autoplays, pauses on hover, drag with the mouse. */
+.cert-slider {
+  position: relative;
+  height: min(80svh, 44rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 1.1rem;
+  background: var(--color-surface);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  isolation: isolate;
+}
+
+.cert-slider:active {
+  cursor: grabbing;
+}
+
+.cs-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.cs-slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.cs-slide img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.cs-slide__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(10 10 11 / 0.35) 0%, transparent 30%),
+    linear-gradient(0deg, rgb(10 10 11 / 0.78) 0%, transparent 46%),
+    linear-gradient(90deg, rgb(10 10 11 / 0.4) 0%, transparent 40%);
+}
+
+.cs-slide__caption {
+  position: absolute;
+  left: clamp(1.4rem, 3vw, 2.75rem);
+  bottom: clamp(1.4rem, 3vw, 2.5rem);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: min(32rem, 70%);
+}
+
+.cs-slide__num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  color: var(--color-accent);
+}
+
+.cs-slide__title {
+  font-size: clamp(1.7rem, 3.4vw, 3rem);
+  line-height: 1.02;
+  color: #fff;
+}
+
+.cs-slide__meta {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  color: rgb(255 255 255 / 0.72);
+}
+
+.cs-slide__open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.62);
+}
+
+/* Floating minimap on the right, driven in sync with the stage. */
+.cs-minimap {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  right: clamp(1rem, 3vw, 2.25rem);
+  width: clamp(13rem, 22vw, 17rem);
+  transform: translateY(-50%);
+  padding: 0.4rem 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 0.85rem;
+  background: rgb(10 10 11 / 0.42);
+  backdrop-filter: blur(14px);
+}
+
+.cs-minimap__window {
+  position: relative;
+  height: 252px; /* 3 × INFO_H */
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+}
+
+.cs-minimap__track {
+  position: relative;
+  height: 100%;
+}
+
+.cs-info {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  height: 84px; /* INFO_H — keep in sync with certificate-slider.tsx */
+  padding: 0 0.7rem;
+  text-decoration: none;
+  opacity: 0.32;
+  transition: opacity 0.35s var(--ease-out-expo);
+  will-change: transform, opacity;
+}
+
+.cs-info.is-active {
+  opacity: 1;
+}
+
+.cs-info__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.cs-info__num {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+}
+
+.cs-info__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  color: var(--color-ink);
+}
+
+.cs-info__metarow {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.cs-info__desc {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-soft);
+}
+
+.cs-info.is-active .cs-info__title {
+  color: #fff;
+}
+
+.cs-hint {
+  position: absolute;
+  z-index: 3;
+  right: clamp(1rem, 3vw, 2.25rem);
+  bottom: clamp(1rem, 2.5vw, 1.6rem);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.4);
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .cert-slider {
+    height: min(68svh, 34rem);
+  }
+
+  .cs-minimap,
+  .cs-hint {
+    display: none;
+  }
+
+  .cs-slide__meta {
+    display: block;
+  }
+}
+
 /* Homepage portrait staged as a single cutout, with a restrained cool halo. */
 .hero-reveal {
   position: absolute;
