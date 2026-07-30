@@ -8,7 +8,11 @@ export function Work() {
       <div className="brand-shell">
         <SectionHeading
           signal="Selected systems"
-          heading="Project and Software that I work"
+          heading={
+            <>
+              Real World <em className="work-heading__accent">Project</em>
+            </>
+          }
           note="Production tools, experiments, and client work built around real local needs."
           aside={<span className="meta">{projects.length} live case files</span>}
         />

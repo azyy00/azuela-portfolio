@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 type SectionHeadingProps = {
-  heading: string
+  heading: ReactNode
   note?: string
   signal: string
   aside?: ReactNode
