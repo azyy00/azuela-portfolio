@@ -19,8 +19,13 @@ export function Experience() {
     <section id="experience" className="brand-section brand-section--experience">
       <div className="brand-shell">
         <SectionHeading
-          heading={experience.heading}
-          signal={experience.signal}
+          index="04"
+          heading={
+            <>
+              Work <em className="sh-accent">Experience</em>
+            </>
+          }
+          signal="Career"
           note={experience.note}
           aside={
             <div className="xp-education">

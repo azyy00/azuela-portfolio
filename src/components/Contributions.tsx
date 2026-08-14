@@ -94,8 +94,13 @@ export function Contributions() {
     <section id="activity" className="brand-section brand-section--activity">
       <div className="brand-shell">
         <SectionHeading
+          index="03"
           signal="Public build log"
-          heading={github.heading}
+          heading={
+            <>
+              Recent <em className="sh-accent">Activity</em>
+            </>
+          }
           note={github.note}
           aside={<span className="meta">@{site.githubUser} / last 12 months</span>}
         />

@@ -45,6 +45,8 @@ export type Project = {
 export const site = {
   name: 'Anthony Azuela',
   role: 'Full-stack Developer',
+  /** Cycled under the name in the hero and About. */
+  roles: ['Junior Full-Stack Developer', 'Graphic Designer', 'Social Media Manager'],
   location: 'Goa, Camarines Sur, PH',
   initials: 'AA',
   email: 'anthony.azuela.buenaflor@gmail.com',
@@ -60,23 +62,27 @@ export const hero = {
   /** Split across lines. The last line is rendered in muted grey. */
   lines: ['I build software', 'for the people', 'around me'],
   intro:
-    'Full-stack developer in Camarines Sur. Most of what I ship runs at Goa Community College — a library attendance system, a class scheduler, a quiz platform — plus work for local businesses and research teams. React and TypeScript on the front, Node and Postgres behind it.',
+    'Full-stack developer in Camarines Sur. I build React and TypeScript web apps — including the library, scheduling, and quiz systems used at Goa Community College.',
   scrollHint: 'Scroll',
 }
 
 export const about = {
   heading: 'About',
   lead: 'I build the software the places around me needed.',
-  body: [
-    'I taught myself to build for the web because the places around me needed software and nobody was going to write it for them. The library was tracking attendance on paper. The registrar was resolving schedule conflicts by hand. So I built the things that fixed those problems, and shipped them.',
-    'That has shaped how I work. I care less about which framework is ahead this year and more about whether the person at the kiosk can check in without asking for help. Most of my projects are in production at a community college, which is a very direct kind of feedback.',
-  ],
+  summary:
+    "Junior full-stack developer at Goa Community College. I started in IT and administrative support, then took over building and maintaining the college's web systems — including a class scheduler now used across campus. I work mostly in React and TypeScript, and a background in graphic design keeps my interfaces clean and user-focused.",
   facts: [
-    { label: 'Focus', value: 'Full-stack web applications' },
-    { label: 'Tools', value: 'React, TypeScript, Node, Postgres' },
-    { label: 'Based in', value: site.location },
-    { label: 'Studied', value: 'BS Computer Science, Partido State University' },
+    { label: 'Role', value: 'Junior Full-Stack Developer' },
+    { label: 'Focus', value: 'React & TypeScript web systems' },
+    { label: 'Based in', value: 'Camarines Sur, Philippines' },
+    { label: 'Nationality', value: 'Filipino' },
   ],
+  education: {
+    degree: 'BS Computer Science',
+    school: 'Partido State University',
+    period: '2021 – 2025',
+    note: 'Graduated',
+  },
 }
 
 export const projects: Project[] = [

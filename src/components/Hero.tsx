@@ -4,9 +4,11 @@ import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
 
 import { hero, site } from '../content/content'
 import { GlassButtonLink } from './ui/glass-button'
+import { RotatingRoles } from './ui/rotating-roles'
 import { HeroReveal } from './HeroReveal'
 
 const ease = [0.16, 1, 0.3, 1] as const
+const NAME_LINES = ['Anthony', 'Azuela']
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -50,14 +52,14 @@ export function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.1 }}
         >
-          {site.name} / {site.role}
+          Portfolio / {site.role}
         </motion.p>
 
         <h1 className="hero-heading display">
-          {hero.lines.map((line, i) => (
+          {NAME_LINES.map((line, i) => (
             <span key={line} className="block overflow-hidden">
               <motion.span
-                className={`hero-text-line block${i === hero.lines.length - 1 ? ' hero-text-line--muted' : ''}`}
+                className="hero-text-line block"
                 initial={{ y: '110%' }}
                 animate={{ y: '0%' }}
                 transition={{ duration: 1, ease, delay: 0.15 + i * 0.09 }}
@@ -67,6 +69,15 @@ export function Hero() {
             </span>
           ))}
         </h1>
+
+        <motion.div
+          className="hero-roles"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease, delay: 0.5 }}
+        >
+          <RotatingRoles roles={site.roles} />
+        </motion.div>
 
         <motion.p
           className="hero-intro"

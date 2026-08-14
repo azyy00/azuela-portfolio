@@ -57,8 +57,13 @@ export function Certificates() {
     <section id="certificates" className="brand-section brand-section--certificates">
       <div className="brand-shell">
         <SectionHeading
+          index="06"
           signal="Verified learning"
-          heading={certificates.heading}
+          heading={
+            <>
+              Proof of <em className="sh-accent">Skill</em>
+            </>
+          }
           note={certificates.note}
           aside={<span className="meta">{certificates.items.length} credentials / DataCamp</span>}
         />

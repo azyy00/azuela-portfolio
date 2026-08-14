@@ -1,20 +1,20 @@
 import ContactForm from '@/components/ui/form-1'
 import { contact, site } from '../content/content'
+import { SectionHeading } from './ui/section-heading'
 
 export function Contact() {
   return (
     <section id="contact" className="brand-section brand-section--contact">
       <div className="brand-shell">
+        <SectionHeading
+          index="07"
+          heading="Contact"
+          signal={site.availability}
+          note={contact.body}
+        />
+
         <div className="contact-layout">
           <div className="contact-copy">
-            <div className="contact-copy__signal">
-              <span aria-hidden="true" />
-              {site.availability}
-            </div>
-
-            <h2 className="display">{contact.heading}</h2>
-            <p>{contact.body}</p>
-
             <a className="contact-email" href={`mailto:${site.email}`}>
               {site.email}
             </a>

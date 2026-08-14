@@ -331,9 +331,22 @@
   color: #777570;
 }
 
+.hero-roles {
+  position: relative;
+  z-index: 2;
+  margin-top: clamp(0.9rem, 1.8vw, 1.4rem);
+  font-family: var(--font-sans);
+  font-size: clamp(1.35rem, 2.6vw, 2rem);
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: var(--color-ink-soft);
+}
+
 .hero-intro {
   max-width: 25rem;
-  margin-top: 2.4rem;
+  margin-top: 2rem;
   color: var(--color-ink-soft);
   font-size: clamp(0.82rem, 1vw, 0.92rem);
   line-height: 1.75;
@@ -503,48 +516,6 @@
   box-shadow: 0 1px 0 color-mix(in oklab, var(--color-accent) 32%, transparent);
   pointer-events: none;
   will-change: transform;
-}
-
-/* The About panel is fixed inside a clipped section on desktop. As the section
-   enters the viewport, the panel is exposed like a rising curtain. */
-.cinematic-about {
-  z-index: 0;
-  background: var(--color-bone);
-  color: var(--color-ink);
-  isolation: isolate;
-}
-
-.cinematic-section-word {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  z-index: 0;
-  color: transparent;
-  font-family: var(--font-sans);
-  font-size: clamp(7rem, 22vw, 22rem);
-  font-weight: 800;
-  letter-spacing: -0.08em;
-  line-height: 0.72;
-  white-space: nowrap;
-  transform: translateX(-50%);
-  -webkit-text-stroke: 1px rgb(237 235 230 / 0.07);
-  background: linear-gradient(180deg, rgb(237 235 230 / 0.09), transparent 72%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  pointer-events: none;
-  user-select: none;
-}
-
-.cinematic-work-word {
-  bottom: -0.04em;
-  z-index: 2;
-  font-size: clamp(8rem, 24vw, 24rem);
-}
-
-@media (max-width: 767px) {
-  .cinematic-work-word {
-    bottom: 2rem;
-  }
 }
 
 /* About portrait — framed B&W image with a red-tinted glow to sit in the theme */
@@ -1355,6 +1326,126 @@
   padding-block: clamp(6.5rem, 10vw, 9rem) clamp(7.5rem, 11vw, 10rem);
 }
 
+/* Legendary banner — a dossier masthead ruled top and bottom: big accent index,
+   heavy uppercase title, hatch fill, and a mono unit label. Shared by every
+   section for one bold, document-like system. */
+.brand-banner {
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.brand-banner__bar {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  padding: clamp(0.85rem, 1.5vw, 1.35rem) 0;
+  border-top: 2px solid rgb(237 235 230 / 0.9);
+  border-bottom: 2px solid rgb(237 235 230 / 0.9);
+}
+
+.brand-banner__index {
+  flex: 0 0 auto;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.brand-banner__title {
+  flex: 0 0 auto;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3.1vw, 2.55rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+/* In the banner the shared accent word drops the serif italic and reads as a
+   heavy red uppercase word instead. */
+.brand-banner__title .sh-accent {
+  font-family: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  color: var(--color-accent);
+}
+
+.brand-banner__hatch {
+  flex: 1 1 auto;
+  align-self: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  margin: 0 0.35rem;
+  background-image: repeating-linear-gradient(
+    -62deg,
+    color-mix(in oklab, var(--color-ink) 26%, transparent) 0,
+    color-mix(in oklab, var(--color-ink) 26%, transparent) 1.5px,
+    transparent 1.5px,
+    transparent 9px
+  );
+}
+
+.brand-banner__unit {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.brand-banner__sub {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  margin-top: clamp(1rem, 2vw, 1.6rem);
+}
+
+.brand-banner__note {
+  max-width: 44rem;
+  color: var(--color-ink-soft);
+  font-size: clamp(0.9rem, 1.15vw, 1.05rem);
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+.brand-banner__aside {
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+@media (max-width: 767px) {
+  .brand-banner__title {
+    font-size: 1.4rem;
+    white-space: normal;
+  }
+
+  .brand-banner__index {
+    font-size: 2rem;
+  }
+
+  .brand-banner__hatch,
+  .brand-banner__unit {
+    display: none;
+  }
+
+  .brand-banner__sub {
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .brand-banner__aside {
+    text-align: left;
+  }
+}
+
 .brand-section-heading {
   display: grid;
   grid-template-areas:
@@ -1408,16 +1499,20 @@
   letter-spacing: -0.05em;
 }
 
-.brand-section-heading__title:has(.work-heading__accent) {
-  max-width: none;
-  font-size: clamp(3.15rem, 5vw, 4.75rem);
-  white-space: nowrap;
+.brand-section-heading__title:has(.sh-accent) {
+  max-width: 16ch;
+  font-size: clamp(3rem, 5.6vw, 5.2rem);
+  text-wrap: balance;
 }
 
-.work-heading__accent {
-  color: var(--color-accent);
+/* Shared title accent: the site's serif-italic red voice, used to lift one word
+   of every section headline so the headers read as one modern editorial system. */
+.sh-accent {
+  font-family: var(--font-serif);
   font-style: italic;
-  font-weight: inherit;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--color-accent);
 }
 
 .brand-section-heading__note {
@@ -2086,16 +2181,6 @@
   margin-bottom: 1.5rem;
 }
 
-.cinematic-about {
-  background: var(--color-bone);
-}
-
-.cinematic-section-word {
-  background: none;
-  background-clip: initial;
-  -webkit-background-clip: initial;
-}
-
 .about-portrait {
   border-radius: 0.65rem;
   box-shadow: 0 2rem 5rem -3rem rgb(0 0 0 / 0.85);
@@ -2380,9 +2465,8 @@
     font-size: clamp(2.75rem, 14vw, 4.2rem);
   }
 
-  .brand-section-heading__title:has(.work-heading__accent) {
-    font-size: clamp(2.75rem, 13vw, 4rem);
-    white-space: normal;
+  .brand-section-heading__title:has(.sh-accent) {
+    font-size: clamp(2.5rem, 12vw, 3.7rem);
   }
 
   .brand-section-heading__aside {
@@ -2462,4 +2546,123 @@
     transform: none !important;
   }
 
+}
+
+/* About — profile layout beside the lanyard badge (résumé-driven). */
+.about-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.about-layout__badge {
+  height: min(64vh, 38rem);
+  min-height: 24rem;
+}
+
+.about-layout__info {
+  min-width: 0;
+}
+
+.about-name {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+
+.about-roles {
+  display: block;
+  margin-top: 0.65rem;
+  font-family: var(--font-sans);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-ink-soft);
+}
+
+.about-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4rem 2rem;
+  margin: clamp(1.75rem, 3vw, 2.5rem) 0 0;
+}
+
+.about-facts__item {
+  border-top: 1px solid var(--color-line);
+  padding-top: 0.7rem;
+}
+
+.about-facts__item dd {
+  margin: 0.4rem 0 0;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: var(--color-ink);
+}
+
+.about-education {
+  margin-top: clamp(1.75rem, 3vw, 2.5rem);
+  border-top: 1px solid var(--color-line);
+  padding-top: 0.85rem;
+}
+
+.about-education__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 0.6rem;
+}
+
+.about-education__degree {
+  font-size: 1.05rem;
+  color: var(--color-ink);
+}
+
+.about-education__school {
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+}
+
+.about-education__meta {
+  flex: 0 0 auto;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+}
+
+.about-education__meta p:first-child {
+  color: var(--color-ink-soft);
+}
+
+.about-sign {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  margin-top: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.about-sign .quote {
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+  color: var(--color-ink);
+}
+
+@media (max-width: 900px) {
+  .about-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .about-layout__badge {
+    height: 26rem;
+    min-height: 0;
+  }
 }

@@ -26,8 +26,13 @@ export function Skills() {
     <section id="skills" className="brand-section brand-section--skills">
       <div className="brand-shell">
         <SectionHeading
+          index="02"
           signal="Tooling and practice"
-          heading={skills.heading}
+          heading={
+            <>
+              What I <em className="sh-accent">work</em> in
+            </>
+          }
           note={skills.note}
           aside={<span className="meta">Interface / server / design</span>}
         />
