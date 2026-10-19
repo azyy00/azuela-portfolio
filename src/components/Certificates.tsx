@@ -56,7 +56,8 @@ export function Certificates() {
           aspectRatio={CERT_ASPECT}
           tileHeight={30}
           speed={4.5}
-          className="h-[400px] w-full rounded-[0.65rem] border border-line bg-surface sm:h-[560px]"
+          // Full-bleed: breaks out of the shell to the viewport edges; the section clips the scrollbar overhang.
+          className="ml-[calc(50%-50vw)] h-[460px] w-screen border-y border-line bg-surface sm:h-[600px]"
         >
           <div className="relative z-10 flex h-full flex-col items-center justify-between py-10 text-center sm:py-12">
             <h3 className="text-balance px-6 text-3xl font-medium tracking-tight text-ink sm:text-5xl">
