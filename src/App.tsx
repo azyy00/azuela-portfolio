@@ -10,6 +10,7 @@ import { Experience } from './components/Experience'
 import { About } from './components/About'
 import { Certificates } from './components/Certificates'
 import { Contact } from './components/Contact'
+import { SiteFooter } from './components/SiteFooter'
 import HeroScrollAnimation from './components/ui/hero-scroll-animation'
 
 export default function App() {
@@ -51,6 +52,7 @@ export default function App() {
           <Contact />
         </HeroScrollAnimation>
       </main>
+      <SiteFooter />
     </>
   )
 }

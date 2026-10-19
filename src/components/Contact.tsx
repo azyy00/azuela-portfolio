@@ -44,16 +44,6 @@ export function Contact() {
             <ContactForm email={site.email} />
           </div>
         </div>
-
-        <footer className="contact-footer">
-          <span>
-            © {new Date().getFullYear()} {site.name}
-          </span>
-          <span className="contact-footer__mark" aria-label="Azzy">
-            AZZY
-          </span>
-          <span>{site.location}</span>
-        </footer>
       </div>
     </section>
   )
