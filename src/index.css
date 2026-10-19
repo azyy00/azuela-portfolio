@@ -243,121 +243,98 @@
 
 .home-hero {
   height: calc(100svh - clamp(4.5rem, 7vw, 5.5rem));
-  min-height: calc(100svh - clamp(4.5rem, 7vw, 5.5rem));
-  perspective: 1200px;
+  min-height: 34rem;
   isolation: isolate;
-  background:
-    radial-gradient(38rem 32rem at 73% 56%, rgb(164 187 220 / 0.09), transparent 70%),
-    var(--color-bone);
+  background: var(--color-bone);
 }
 
-.home-hero::before {
-  content: '';
+/* Plasma backdrop, faded into the page at the bottom so the marquee
+   below sits on the plain page colour. */
+.hero-shader {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
-  background:
-    linear-gradient(90deg, var(--color-bone) 0%, rgb(10 10 11 / 0.97) 31%, transparent 57%),
-    linear-gradient(180deg, rgb(10 10 11 / 0.1) 66%, var(--color-bone) 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent);
+  mask-image: linear-gradient(180deg, #000 70%, transparent);
 }
 
-.hero-shell {
-  width: min(calc(100% - 7rem), 80rem);
-  margin-inline: auto;
-  padding-block: clamp(8.5rem, 19svh, 10.75rem) 4.25rem;
+/* The cut-out portrait, in front of the name. `translate` centres it without
+   fighting motion's parallax transform. */
+.hero-portrait {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 2;
+  height: 100%;
+  aspect-ratio: 1125 / 844;
+  pointer-events: none;
+  will-change: transform;
+  /* Feather the shoulders where the photo was cropped at its sides and bottom. */
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent),
+    linear-gradient(180deg, #000 78%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent),
+    linear-gradient(180deg, #000 78%, transparent);
+  mask-composite: intersect;
 }
 
-.hero-availability {
+.hero-portrait__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  user-select: none;
+}
+
+.hero-name {
+  position: absolute;
+  /* Centred on the brow line of the portrait: line box is 0.84em tall. */
+  top: calc(37% - 0.42em);
+  left: 0;
+  right: 0;
+  z-index: 1;
+  margin: 0;
   display: flex;
-  width: fit-content;
-  min-height: 2.25rem;
-  align-items: center;
-  gap: 0.625rem;
-  margin-bottom: 1rem;
-  border: 1px solid rgb(237 235 230 / 0.08);
-  border-radius: 9999px;
-  background: rgb(12 12 13 / 0.54);
-  padding: 0.5rem 1rem;
-  color: var(--color-muted);
-  font-size: 0.75rem;
-  line-height: 1;
+  justify-content: center;
+  gap: 0.18em;
+  font-family: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
+  font-size: clamp(4rem, 15.4vw, 17rem);
+  font-weight: 400;
+  line-height: 0.84;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 0 0.8rem 2rem rgb(0 0 0 / 0.16);
-  backdrop-filter: blur(12px);
+  pointer-events: none;
 }
 
-.hero-availability > span:first-child {
-  width: 0.375rem;
-  height: 0.375rem;
+.hero-name__clip {
+  display: block;
+  overflow: hidden;
+  padding-top: 0.04em;
 }
 
-.hero-availability > span:nth-child(2) {
-  color: var(--color-ink);
-  font-weight: 600;
-}
-
-.hero-availability > span:nth-child(3) {
-  width: 1px;
-  height: 1rem;
-  background: var(--color-line);
-}
-
-.hero-kicker {
-  margin-bottom: 1.25rem;
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
-  line-height: 1.4;
-}
-
-.hero-heading {
-  position: relative;
-  z-index: 2;
-  max-width: 50rem;
-  isolation: isolate;
-  font-size: clamp(3.25rem, 6.7vw, 6.15rem);
-  line-height: 0.99;
-  letter-spacing: -0.055em;
-}
-
-.hero-text-line {
-  position: relative;
-  width: fit-content;
-  max-width: 100%;
-  text-shadow: 0 1.2rem 3.5rem rgb(0 0 0 / 0.3);
-}
-
-.hero-text-line--muted {
-  color: #777570;
-}
-
-.hero-roles {
-  position: relative;
-  z-index: 2;
-  margin-top: clamp(0.9rem, 1.8vw, 1.4rem);
-  font-family: var(--font-sans);
-  font-size: clamp(1.35rem, 2.6vw, 2rem);
-  font-style: italic;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-  color: var(--color-ink-soft);
-}
-
-.hero-intro {
-  max-width: 25rem;
-  margin-top: 2rem;
-  color: var(--color-ink-soft);
-  font-size: clamp(0.82rem, 1vw, 0.92rem);
-  line-height: 1.75;
+.hero-name__word {
+  display: block;
+  background: linear-gradient(180deg, #f6f4f0 34%, #9a9792 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .hero-actions {
+  position: absolute;
+  inset-inline: 0;
+  bottom: clamp(1.5rem, 6svh, 3.25rem);
+  z-index: 3;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 0.75rem;
-  margin-top: 1.5rem;
 }
 
 .hero-actions .glass-button {
@@ -440,47 +417,22 @@
 
 @media (max-width: 767px) {
   .home-hero {
-    height: auto;
-    /* Reserve the marquee plus the floating mobile dock in the first fold. */
-    min-height: calc(100svh - 8.25rem);
+    height: calc(100svh - 8.25rem);
+    min-height: 32rem;
   }
 
-  .home-hero::before {
-    background:
-      linear-gradient(180deg, transparent 18%, rgb(10 10 11 / 0.2) 33%, var(--color-bone) 53%),
-      linear-gradient(90deg, rgb(10 10 11 / 0.35), transparent);
+  /* A phone is narrower than the head, so the name would vanish behind it.
+     Shrink the portrait and lift the name so only "Azuela" tucks under the hair. */
+  .hero-portrait {
+    height: 74%;
   }
 
-  .hero-shell {
-    width: 100%;
-    margin: 0;
-    padding: clamp(18rem, 46svh, 22rem) 1.25rem 2.25rem;
-  }
-
-  .hero-availability {
-    margin-bottom: 0.75rem;
-    font-size: 0.75rem;
-  }
-
-  .hero-kicker {
-    margin-bottom: 1rem;
-    font-size: 0.75rem;
-  }
-
-  .hero-heading {
-    max-width: 24rem;
-    font-size: clamp(2.8rem, 13vw, 4.1rem);
-    line-height: 0.98;
-  }
-
-  .hero-intro {
-    margin-top: 1.35rem;
-    font-size: 0.78rem;
-    line-height: 1.65;
-  }
-
-  .hero-actions {
-    margin-top: 1rem;
+  .hero-name {
+    top: 13%;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    font-size: 25vw;
   }
 
   .hero-marquee {
@@ -1206,66 +1158,6 @@
 }
 
 /* Homepage portrait staged as a single cutout, with a restrained cool halo. */
-.hero-reveal {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  will-change: transform;
-}
-
-.hero-reveal__halo {
-  position: absolute;
-  right: -10%;
-  bottom: 4%;
-  width: 73%;
-  height: 78%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 48%,
-    rgb(172 194 228 / 0.12),
-    rgb(81 109 151 / 0.045) 45%,
-    transparent 72%
-  );
-  filter: blur(1.2rem);
-}
-
-.hero-reveal__image {
-  position: absolute;
-  right: -11vw;
-  bottom: -2.9rem;
-  width: min(79vw, 74rem);
-  max-width: none;
-  height: auto;
-  user-select: none;
-  filter:
-    saturate(1.03)
-    contrast(1.055)
-    drop-shadow(0 0 1.7rem rgb(150 180 225 / 0.075));
-}
-
-@media (max-width: 767px) {
-  .hero-reveal {
-    inset: 3.6rem 0 auto;
-    height: clamp(18rem, 43svh, 23rem);
-  }
-
-  .hero-reveal__halo {
-    right: -28%;
-    bottom: -4%;
-    width: 120%;
-    height: 100%;
-  }
-
-  .hero-reveal__image {
-    right: -8.5rem;
-    bottom: 0;
-    width: clamp(34rem, 142vw, 42rem);
-    opacity: 0.86;
-  }
-}
-
 /* --------------------------------------------------------------------------
    AZZY brand system
    Signal rails, technical panels, and an editorial rhythm shared by every
