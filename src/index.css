@@ -2666,3 +2666,15 @@
     min-height: 0;
   }
 }
+
+/* ContributionSkyline reads shadcn token names; map them onto the site palette
+   and let the console panel supply the card chrome. */
+.activity-skyline {
+  --color-background: var(--color-surface);
+  --color-foreground: var(--color-ink);
+  --color-border: var(--color-line);
+  --color-muted-foreground: var(--color-muted);
+  border-width: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
