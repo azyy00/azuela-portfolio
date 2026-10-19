@@ -248,19 +248,30 @@
   background: var(--color-bone);
 }
 
-/* The two portrait layers share one box, so the cut-out sits exactly on the
-   photo. `translate` centres it without fighting motion's parallax transform. */
+/* Plasma backdrop, faded into the page at the bottom so the marquee
+   below sits on the plain page colour. */
+.hero-shader {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent);
+  mask-image: linear-gradient(180deg, #000 70%, transparent);
+}
+
+/* The cut-out portrait, in front of the name. `translate` centres it without
+   fighting motion's parallax transform. */
 .hero-portrait {
   position: absolute;
   bottom: 0;
   left: 50%;
   translate: -50% 0;
-  z-index: 0;
+  z-index: 2;
   height: 100%;
   aspect-ratio: 1125 / 844;
   pointer-events: none;
   will-change: transform;
-  /* The backdrop is the page colour already; feather the edges into it. */
+  /* Feather the shoulders where the photo was cropped at its sides and bottom. */
   -webkit-mask-image:
     linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent),
     linear-gradient(180deg, #000 78%, transparent);
@@ -269,10 +280,6 @@
     linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent),
     linear-gradient(180deg, #000 78%, transparent);
   mask-composite: intersect;
-}
-
-.hero-portrait--front {
-  z-index: 2;
 }
 
 .hero-portrait__img {
@@ -418,17 +425,6 @@
      Shrink the portrait and lift the name so only "Azuela" tucks under the hair. */
   .hero-portrait {
     height: 74%;
-  }
-
-  /* The photo now starts below the top of the hero; fade its top edge (the
-     backdrop only, so the hair in the cut-out stays crisp). */
-  .hero-portrait:not(.hero-portrait--front) {
-    -webkit-mask-image:
-      linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent),
-      linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
-    mask-image:
-      linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent),
-      linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
   }
 
   .hero-name {
