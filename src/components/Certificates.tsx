@@ -1,6 +1,6 @@
 import { certificates } from '../content/content'
 import { SectionHeading } from './ui/section-heading'
-import { CertificateSlider, type CertSlide } from './ui/certificate-slider'
+import { TiltedGridHero, type TiltedGridImage } from './ui/tilted-grid-hero'
 
 // Rendered JPG previews and the source PDFs, keyed by their shared basename.
 const images = import.meta.glob('../assets/certificates/*.jpg', {
@@ -27,30 +27,13 @@ function byBasename(map: Record<string, string>): Record<string, string> {
 const imageByName = byBasename(images)
 const pdfByName = byBasename(pdfs)
 
-// A short track label per credential for the minimap.
-const CATEGORY: Record<string, string> = {
-  'Python Cert': 'Programming',
-  SQL: 'Databases',
-  'Intermediate SQL': 'Databases',
-  Git: 'Tooling',
-  'Data Science': 'Data',
-  'Data Engineer': 'Data',
-  'Machine Learning': 'Machine Learning',
-  'Data Visualization': 'Data',
-  'Cloud Computing': 'Cloud',
-}
+// Matches the rendered previews (1440×831), so object-cover never crops a certificate.
+const CERT_ASPECT = 1440 / 831
 
-// Built once from static content — a stable reference for the slider effect.
-const slides: CertSlide[] = certificates.items.map((item, index) => ({
-  id: item.file,
-  number: String(index + 1).padStart(2, '0'),
-  title: item.title,
-  category: CATEGORY[item.file] ?? certificates.issuer,
-  year: item.date.split(' ').pop() ?? '',
-  description: `${item.length} · ${item.date}`,
-  image: imageByName[item.file] ?? '',
-  href: pdfByName[item.file] ?? imageByName[item.file] ?? '#',
-}))
+// Built once from static content — a stable reference for the hero's preload effect.
+const reel: TiltedGridImage[] = certificates.items
+  .filter((item) => imageByName[item.file])
+  .map((item) => ({ src: imageByName[item.file]!, alt: `${item.title} certificate` }))
 
 export function Certificates() {
   return (
@@ -68,7 +51,53 @@ export function Certificates() {
           aside={<span className="meta">{certificates.items.length} credentials / DataCamp</span>}
         />
 
-        <CertificateSlider slides={slides} />
+        <TiltedGridHero
+          images={reel}
+          aspectRatio={CERT_ASPECT}
+          tileHeight={30}
+          speed={4.5}
+          className="h-[400px] w-full rounded-[0.65rem] border border-line bg-surface sm:h-[560px]"
+        >
+          <div className="relative z-10 flex h-full flex-col items-center justify-between py-10 text-center sm:py-12">
+            <h3 className="text-balance px-6 text-3xl font-medium tracking-tight text-ink sm:text-5xl">
+              Every credential,
+              <br />
+              brought into <em className="sh-accent">focus.</em>
+            </h3>
+            <p className="max-w-md text-balance px-6 text-sm text-muted">
+              {certificates.items.length} statements of accomplishment from {certificates.issuer}, curving in
+              from one edge and fading round the other.
+            </p>
+          </div>
+        </TiltedGridHero>
+
+        {/* The reel is decorative and pointer-free; the PDFs live here. */}
+        <ul className="mt-6 grid gap-px overflow-hidden rounded-[0.65rem] border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+          {certificates.items.map((item, index) => (
+            <li key={item.file} className="bg-surface">
+              <a
+                href={pdfByName[item.file] ?? imageByName[item.file] ?? '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex h-full items-baseline gap-3 px-4 py-3.5 transition-colors hover:bg-surface-alt"
+              >
+                <span className="meta text-accent">{String(index + 1).padStart(2, '0')}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm text-ink">{item.title}</span>
+                  <span className="meta block">
+                    {item.length} · {item.date}
+                  </span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="meta transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                >
+                  ↗
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   )
