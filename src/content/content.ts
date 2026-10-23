@@ -20,6 +20,8 @@ import logoSanjose from '../assets/logo-sanjose.jpg'
 import adelphasThumb from '../assets/adelphas.png'
 // Live hero of the agricultural-programs research site (bacom-researchs-site).
 import farmerThumb from '../assets/farmer.png'
+// Homepage of the Mikko Lucernas real-estate site, captured from a local build of its repo.
+import mikkoThumb from '../assets/mikko-realtors.webp'
 
 export type Project = {
   slug: string
@@ -86,6 +88,18 @@ export const about = {
 }
 
 export const projects: Project[] = [
+  {
+    slug: 'mikko-realtors',
+    title: 'Mikko Lucernas Real Estate',
+    year: '2026',
+    role: 'Full-stack',
+    summary:
+      'A premium site for Las Vegas REALTOR® Mikko Lucernas: a cinematic video intro, live MLS home search, community and relocation guides, mortgage and VA loan calculators, and lead capture that turns visitors into conversations.',
+    stack: ['Next.js', 'TypeScript', 'Tailwind', 'MapLibre'],
+    span: 'wide',
+    image: mikkoThumb,
+    source: 'https://github.com/azyy00/Mikko-realtors',
+  },
   {
     slug: 'gcc-library',
     title: 'GCC Library System',
