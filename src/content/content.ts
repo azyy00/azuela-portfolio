@@ -98,6 +98,7 @@ export const projects: Project[] = [
     stack: ['Next.js', 'TypeScript', 'Tailwind', 'MapLibre'],
     span: 'wide',
     image: mikkoThumb,
+    live: 'https://lvpinoy-realtor.vercel.app',
     source: 'https://github.com/azyy00/Mikko-realtors',
   },
   {
