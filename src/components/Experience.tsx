@@ -1,23 +1,38 @@
-import { motion, useReducedMotion, type Variants } from 'motion/react'
-
 import { experience } from '../content/content'
 import { SectionHeading } from './ui/section-heading'
+import Timeline, { type JourneyItem, type Month } from './ui/timeline'
+import portrait from '../assets/live-about-me.png'
 
-const rowReveal: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] },
-  }),
-}
+const MONTHS: Month[] = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+]
+
+/**
+ * Each role becomes a milestone at its start date ("Dec 2025 - Present" →
+ * 2025 December). Oldest first, alternating above and below the line.
+ */
+const milestones: JourneyItem[] = experience.roles
+  .map((role) => {
+    const [mon = '', year = ''] = role.period.split(/\s+-\s+/)[0]!.trim().split(/\s+/)
+    const month = MONTHS.find((m) => m.startsWith(mon)) ?? 'January'
+    return {
+      id: `${year}-${month.toLowerCase()}-${role.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+      year,
+      month,
+      content: `${role.title}, ${role.org}`,
+      position: 'top' as const,
+    }
+  })
+  .sort((a, b) => Number(a.year) - Number(b.year) || MONTHS.indexOf(a.month) - MONTHS.indexOf(b.month))
+  .map((item, i) => ({ ...item, position: i % 2 === 0 ? ('top' as const) : ('bottom' as const) }))
+
+const firstYear = milestones[0]?.year ?? ''
 
 export function Experience() {
-  const reduce = useReducedMotion()
-
   return (
     <section id="experience" className="brand-section brand-section--experience">
-      <div className="brand-shell">
+      <div className="brand-shell xp-shell">
         <SectionHeading
           index="04"
           heading={
@@ -36,57 +51,22 @@ export function Experience() {
             </div>
           }
         />
-
-        <ol className="xp-ledger">
-          {experience.roles.map((role, index) => {
-            const present = /present|now/i.test(role.period)
-            return (
-              <motion.li
-                key={`${role.org}-${role.title}`}
-                className="xp-row"
-                custom={index}
-                variants={reduce ? undefined : rowReveal}
-                initial={reduce ? false : 'hidden'}
-                whileInView={reduce ? undefined : 'show'}
-                viewport={{ once: true, margin: '0px 0px -12% 0px' }}
-              >
-                <div className="xp-row__rail">
-                  <span className="xp-row__index" aria-hidden="true">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span className="xp-row__period">{role.period}</span>
-                  {present ? (
-                    <span className="xp-live">
-                      <span className="xp-live__dot" aria-hidden="true" />
-                      Current
-                    </span>
-                  ) : null}
-                </div>
-
-                <div className="xp-row__main">
-                  <h3 className="xp-row__title display">{role.title}</h3>
-                  <div className="xp-row__org">
-                    <img
-                      src={role.logo}
-                      alt={`${role.org} logo`}
-                      className="xp-row__logo"
-                      loading="lazy"
-                    />
-                    <span>{role.org}</span>
-                  </div>
-                  <p className="xp-row__body">{role.body}</p>
-                </div>
-
-                <span className="xp-row__marker" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M7 17L17 7M17 7H8.5M17 7v8.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-              </motion.li>
-            )
-          })}
-        </ol>
       </div>
+
+      {/* Pinned horizontal scroll: the section scrolls sideways through the roles. */}
+      <Timeline
+        title="Career path"
+        periodLabel={`${firstYear} — Present`}
+        items={milestones}
+        textColor="var(--color-ink)"
+        mutedTextColor="var(--color-ink-soft)"
+        activeColor="var(--color-accent)"
+        backgroundColor="var(--color-bone)"
+        imageUrl={portrait}
+        imageAlt={`Portrait of Anthony Azuela`}
+        duration={1.4}
+        className="xp-timeline-pin"
+      />
     </section>
   )
 }
