@@ -91,6 +91,7 @@ export type TimelineProps = {
   mutedTextColor?: string;
   activeColor?: string;
   backgroundColor?: string;
+  /** Opening photo. Pass an empty string to start straight at the title. */
   imageUrl?: string;
   imageAlt?: string;
   /** Reveal animation duration, in seconds. */
@@ -188,9 +189,10 @@ export default function Timeline({
 
   // The original track is sized for four top milestones; shorten it by one
   // column per missing milestone so the slide never runs into empty space.
+  // Without the opening photo the track also loses its width and gap.
   const missing = Math.max(0, 4 - topJourneyData.length);
-  const trackVw = 240 - missing * 45;
-  const trackVwMobile = 800 - missing * 110;
+  const trackVw = 240 - missing * 45 - (imageUrl ? 0 : 35);
+  const trackVwMobile = 800 - missing * 110 - (imageUrl ? 0 : 90);
   const itemKey = items.map((item) => item.id).join("|");
 
   const sectionStyle: CSSProperties = {
@@ -392,14 +394,16 @@ export default function Timeline({
           className="journey-track mr-[2vw] flex h-[30vw] items-center gap-[5vw] px-[5vw] max-[600px]:h-[80vh] max-[600px]:px-[7vw]"
           style={{ ["--track" as string]: `${trackVw}vw`, ["--track-m" as string]: `${trackVwMobile}vw` }}
         >
-          <div className="h-full w-[30vw] shrink-0 overflow-hidden rounded-[1vw] max-[600px]:h-[65vw] max-[600px]:w-[85vw] max-[600px]:rounded-[5vw]">
-            <img
-              src={imageUrl}
-              alt={imageAlt}
-              draggable={false}
-              className="h-full w-full object-cover"
-            />
-          </div>
+          {imageUrl ? (
+            <div className="h-full w-[30vw] shrink-0 overflow-hidden rounded-[1vw] max-[600px]:h-[65vw] max-[600px]:w-[85vw] max-[600px]:rounded-[5vw]">
+              <img
+                src={imageUrl}
+                alt={imageAlt}
+                draggable={false}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          ) : null}
 
           <div className="relative h-full w-full">
             <div className="w-full absolute left-0 top-[49%] tranlate-y-[-50%] flex items-center h-fit">

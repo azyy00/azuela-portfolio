@@ -1,7 +1,6 @@
 import { experience } from '../content/content'
 import { SectionHeading } from './ui/section-heading'
 import Timeline, { type JourneyItem, type Month } from './ui/timeline'
-import portrait from '../assets/live-about-me.png'
 
 const MONTHS: Month[] = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -62,8 +61,7 @@ export function Experience() {
         mutedTextColor="var(--color-ink-soft)"
         activeColor="var(--color-accent)"
         backgroundColor="var(--color-bone)"
-        imageUrl={portrait}
-        imageAlt={`Portrait of Anthony Azuela`}
+        imageUrl=""
         duration={1.4}
         className="xp-timeline-pin"
       />
