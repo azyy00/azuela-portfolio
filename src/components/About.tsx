@@ -1,13 +1,37 @@
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 
 import aboutPortrait from '../assets/about-me.png'
 import { about, site } from '../content/content'
 import { RotatingRoles } from './ui/rotating-roles'
 import { SectionHeading } from './ui/section-heading'
-import Lanyard from './ui/Lanyard'
+
+// The lanyard pulls in three.js, a 2 MB physics engine and a 2.5 MB model.
+// Load all of it only when the badge comes near the viewport, not on page open.
+const Lanyard = lazy(() => import('./ui/Lanyard'))
+
+function useNearViewport(margin = '800px 0px') {
+  const ref = useRef<HTMLDivElement>(null)
+  const [near, setNear] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || near) return
+    if (typeof IntersectionObserver === 'undefined') return setNear(true)
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) {
+        setNear(true)
+        io.disconnect()
+      }
+    }, { rootMargin: margin })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [margin, near])
+  return [ref, near] as const
+}
 
 export function About() {
   const reduced = useReducedMotion()
+  const [badgeRef, badgeNear] = useNearViewport()
   const reveal = reduced
     ? {}
     : {
@@ -30,13 +54,17 @@ export function About() {
 
         <div className="about-layout">
           {/* Lanyard — a draggable ID badge carrying the portrait (unchanged) */}
-          <div className="about-layout__badge">
-            <Lanyard
-              position={[0, 0, 13]}
-              gravity={[0, -40, 0]}
-              frontImage={aboutPortrait}
-              imageFit="cover"
-            />
+          <div className="about-layout__badge" ref={badgeRef}>
+            {badgeNear ? (
+              <Suspense fallback={null}>
+                <Lanyard
+                  position={[0, 0, 13]}
+                  gravity={[0, -40, 0]}
+                  frontImage={aboutPortrait}
+                  imageFit="cover"
+                />
+              </Suspense>
+            ) : null}
           </div>
 
           <motion.div className="about-layout__info" {...reveal}>

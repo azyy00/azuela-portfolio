@@ -12,6 +12,29 @@ import { GlassButton, GlassButtonLink } from './glass-button'
 
 const transition = { type: 'spring', stiffness: 160, damping: 20, mass: 1 } as const
 
+/**
+ * A looping card preview that fetches nothing until it nears the viewport,
+ * then plays only while on screen. Autoplay alone would start downloading the
+ * whole clip on page open.
+ */
+function CardVideo({ reduced, ...props }: React.ComponentProps<'video'> & { reduced: boolean | null }) {
+  const ref = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    const video = ref.current
+    if (!video || reduced || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) video.play().catch(() => {})
+        else video.pause()
+      },
+      { rootMargin: '300px 0px' },
+    )
+    io.observe(video)
+    return () => io.disconnect()
+  }, [reduced])
+  return <video ref={ref} preload="none" loop muted playsInline {...props} />
+}
+
 // Per-project gradient wash for the preview card. Deep, saturated pairs so white
 // copy stays legible over them — the "colorful" cue without turning pastel.
 const ACCENTS: Array<[string, string]> = [
@@ -253,14 +276,10 @@ function WorkCard({
 
           <span className="work-card__shot">
             {project.video ? (
-              <video
+              <CardVideo
                 src={project.video}
                 poster={project.image}
-                autoPlay={!reduced}
-                loop
-                muted
-                playsInline
-                preload="metadata"
+                reduced={reduced}
                 className={cn('work-card__media', fit)}
                 aria-label={`${project.title} preview`}
               />
