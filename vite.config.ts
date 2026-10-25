@@ -12,13 +12,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          three: ['three', '@react-three/fiber', '@react-three/drei'],
-        },
-      },
-    },
-  },
+  // No manual chunks: three.js is only used by the lazily loaded Lanyard, so it
+  // lands in that chunk. A forced 'three' chunk also captured React itself,
+  // which made the entry preload all of three.js on page open.
 })

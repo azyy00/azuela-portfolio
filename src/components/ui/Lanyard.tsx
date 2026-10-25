@@ -68,19 +68,22 @@ export default function Lanyard({
   // flings the bodies to infinity (NaN) — the card and band then never recover.
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [inView, setInView] = useState(false)
+  // Whether it is on screen right now. Once mounted, the canvas stops its
+  // render loop and the physics while scrolled away, instead of running forever.
+  const [visible, setVisible] = useState(false)
   useEffect(() => {
     const el = wrapperRef.current
     if (!el) return
     if (typeof IntersectionObserver === 'undefined') {
       setInView(true)
+      setVisible(true)
       return
     }
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry?.isIntersecting) {
-          setInView(true)
-          io.disconnect()
-        }
+        const on = !!entry?.isIntersecting
+        setVisible(on)
+        if (on) setInView(true)
       },
       { rootMargin: '200px 0px' },
     )
@@ -92,13 +95,14 @@ export default function Lanyard({
     <div className="lanyard-wrapper" ref={wrapperRef}>
       {inView && (
       <Canvas
+        frameloop={visible ? 'always' : 'never'}
         camera={{ position: position, fov: fov }}
         dpr={[1, isMobile ? 1.5 : 2]}
         gl={{ alpha: transparent }}
         onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 1)}
       >
         <ambientLight intensity={Math.PI} />
-        <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
+        <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60} paused={!visible}>
           {/* Gate the joint-bearing band behind its own Suspense boundary so it
               mounts exactly once, after every asset has loaded. Loading the
               model/textures inside the band itself made it suspend and remount
