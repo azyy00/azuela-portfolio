@@ -1938,63 +1938,99 @@
   border-bottom: 0;
 }
 
-/* Contact / direct handoff */
-.brand-section--contact {
-  min-height: 100svh;
+/* Contact / direct handoff. No full-screen height and a short bottom pad, so
+   the footer wordmark follows straight after the form. */
+.brand-section--contact .contact-shell {
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
 .contact-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(22rem, 0.72fr);
-  gap: clamp(3rem, 8vw, 8rem);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(22rem, 0.8fr);
+  gap: clamp(2.5rem, 6vw, 6rem);
+  align-items: stretch;
 }
 
-.contact-copy__signal {
-  margin-bottom: 2rem;
+.contact-copy {
+  display: flex;
+  flex-direction: column;
 }
 
-.contact-copy h2 {
-  max-width: 7ch;
-  font-size: clamp(4rem, 8vw, 7.5rem);
-  letter-spacing: -0.06em;
-}
-
-.contact-copy > p {
-  max-width: 33rem;
-  margin-top: 2rem;
+.contact-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   color: var(--color-ink-soft);
-  font-size: 1rem;
-  line-height: 1.75;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.contact-status__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: #3ecf8e;
+  box-shadow: 0 0 0 0.25rem rgb(62 207 142 / 0.15);
+}
+
+.contact-title {
+  margin-top: 1.25rem;
+  max-width: 12ch;
+  color: var(--color-ink);
+  font-size: clamp(2.75rem, 6vw, 5.5rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
 }
 
 .contact-email {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: fit-content;
   max-width: 100%;
-  margin-top: 2.5rem;
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--color-accent);
   color: var(--color-ink);
-  font-family: var(--font-mono);
-  font-size: clamp(0.72rem, 1.1vw, 0.88rem);
-  text-decoration-color: var(--color-accent);
-  text-underline-offset: 0.35rem;
+  font-size: clamp(1rem, 1.9vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
   overflow-wrap: anywhere;
+  transition: color 180ms var(--ease-out-expo);
+}
+
+.contact-email svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex: 0 0 auto;
+  color: var(--color-accent);
+  transition: transform 220ms var(--ease-out-expo);
 }
 
 .contact-email:hover {
   color: var(--color-accent);
 }
 
+.contact-email:hover svg {
+  transform: translate(3px, -3px);
+}
+
+/* Pinned to the bottom of the column so it lines up with the form's base. */
 .contact-profiles {
-  margin-top: 3.5rem;
-  border-top: 1px solid var(--color-line);
+  margin-top: auto;
+  padding-top: 2.5rem;
 }
 
 .contact-profiles a {
-  display: flex;
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
+  gap: 1rem;
   padding-block: 0.9rem;
-  border-bottom: 1px solid var(--color-line);
+  border-top: 1px solid var(--color-line);
   color: var(--color-ink-soft);
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -2003,6 +2039,24 @@
   transition:
     color 180ms var(--ease-out-expo),
     padding 180ms var(--ease-out-expo);
+}
+
+.contact-profiles a:last-child {
+  border-bottom: 1px solid var(--color-line);
+}
+
+.contact-profiles__value {
+  color: var(--color-muted);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact-profiles a svg {
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .contact-profiles a:hover {
